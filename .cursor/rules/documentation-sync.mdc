@@ -1,0 +1,30 @@
+---
+description: Keep project.md and technical.md in sync with every code change
+alwaysApply: true
+---
+
+# Documentation sync (required)
+
+Before finishing **any** coding task in this repo, reconcile documentation with the changes:
+
+1. Review the diff you made (code, config, schema, scripts).
+2. **Update `project.md` and/or `technical.md` in the same session** whenever the diff affects product behavior, routes, features, data model, APIs, env vars, or deployment.
+
+**What goes where**
+
+- **`project.md`**: product behavior, user-facing routes, feature checklist status, deployment targets, non-goals.
+- **`technical.md`**: stack/adapters, Convex schema (tables/fields/indexes), query/mutation names, auth approach, env var names, Cloudflare/Convex deployment or build steps, security assumptions.
+
+## How to update
+
+- Edit the relevant sections in place; keep headings stable.
+- Mark implemented checklist items in `project.md` with `[x]` when the corresponding feature lands.
+- After schema or API changes, reflect the **current** shape and function names—do not leave outdated tables or endpoints.
+
+## Scope
+
+- Applies to **every** coding task in this repo, including small fixes: if the change would confuse a reader of `project.md` or `technical.md`, update those files in the **same** change.
+
+## Out of scope
+
+- Pure whitespace-only or typo fixes in non-user-facing internal comments **with zero behavioral impact** may skip doc updates. If the typo fix is in user-visible copy, config keys, or API names, **update the docs**.
