@@ -10,7 +10,7 @@ const nav = [
 export function SiteHeader() {
   return (
     <header className="border-b border-zinc-200/80 bg-white/80 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80">
-      <div className="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <Link
           href="/"
           className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"

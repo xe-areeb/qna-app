@@ -44,19 +44,16 @@ export default function LeaderboardPage() {
       </div>
 
       {!hasUrl ? (
-        <ErrorPlaceholder title="Convex URL not configured">
-          Set <code className="font-mono text-xs">NEXT_PUBLIC_CONVEX_URL</code>{" "}
-          and reload.
+        <ErrorPlaceholder title="Live data is unavailable">
+          The leaderboard isn’t connected right now. Please check back shortly or
+          contact the event organiser.
         </ErrorPlaceholder>
       ) : event === undefined ? (
         <LoadingPlaceholder label="Loading event…" />
       ) : event === null ? (
-        <ErrorPlaceholder title="Demo event not available">
-          Visit{" "}
-          <Link href="/admin/questions" className="font-semibold underline">
-            /admin/questions
-          </Link>{" "}
-          and click <strong>Seed demo event</strong>.
+        <ErrorPlaceholder title="Event not ready yet">
+          Rankings will appear once the organiser opens the quiz. Please check
+          back shortly.
         </ErrorPlaceholder>
       ) : (
         <LeaderboardPanel projection={false} limit={50} eventId={event._id} />

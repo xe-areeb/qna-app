@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
@@ -120,9 +119,9 @@ function QuizPageInner() {
   if (!hasUrl) {
     return (
       <PageShell title="Quiz">
-        <ErrorPlaceholder title="Convex URL not configured">
-          Set <code className="font-mono text-xs">NEXT_PUBLIC_CONVEX_URL</code>{" "}
-          and reload.
+        <ErrorPlaceholder title="Live data is unavailable">
+          The quiz isn’t connected right now. Please check back shortly or contact
+          the event organiser.
         </ErrorPlaceholder>
       </PageShell>
     );
@@ -207,12 +206,9 @@ function QuizPageInner() {
   if (questions.length === 0) {
     return (
       <PageShell title={event.title}>
-        <ErrorPlaceholder title="No questions for this event yet">
-          Visit{" "}
-          <Link href="/admin/questions" className="font-semibold underline">
-            /admin/questions
-          </Link>{" "}
-          and seed the demo event, or add questions manually.
+        <ErrorPlaceholder title="Quiz isn’t ready yet">
+          Questions are still being set up for this event. Please check back
+          shortly or contact the event organiser.
         </ErrorPlaceholder>
       </PageShell>
     );
@@ -274,47 +270,53 @@ function QuizPageInner() {
     }
   }
 
+  const buttonLabel = completing
+    ? "Completing quiz…"
+    : submitting
+      ? "Saving…"
+      : isLast
+        ? "Submit final answer"
+        : "Next question";
+
   return (
-    <PageShell
-      title={event.title}
-      description={`Hi ${result.visitorName} - answer one question at a time. Your score appears after the last one.`}
-    >
-      <div className="space-y-6">
-        <div className="space-y-2">
-          <div className="flex items-baseline justify-between">
-            <p className="text-sm font-medium uppercase tracking-wide text-zinc-500">
-              Question {currentIndex + 1} of {total}
-            </p>
-            <p className="text-xs text-zinc-500 tabular-nums">
-              {Math.round(progressPct)}% complete
-            </p>
-          </div>
+    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-3 sm:px-6 sm:py-4 md:overflow-hidden md:py-5">
+      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-3 md:gap-4">
+        <header className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+          <h1 className="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-lg">
+            {event.title}
+          </h1>
+          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+            Hi {result.visitorName} · Question {currentIndex + 1} of {total}
+          </p>
+        </header>
+
+        <div
+          className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(progressPct)}
+          aria-label="Quiz progress"
+        >
           <div
-            className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(progressPct)}
-          >
-            <div
-              className="h-full rounded-full bg-emerald-500 transition-all duration-300"
-              style={{ width: `${progressPct}%` }}
-              aria-hidden
-            />
-          </div>
+            className="h-full rounded-full bg-emerald-500 transition-all duration-300"
+            style={{ width: `${progressPct}%` }}
+            aria-hidden
+          />
         </div>
 
-        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/40 sm:p-6">
-          <h2 className="text-lg font-semibold leading-snug text-zinc-900 dark:text-zinc-50 sm:text-xl">
+        <div className="flex flex-1 flex-col gap-3 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/40 sm:p-5">
+          <h2 className="text-lg font-semibold leading-snug text-zinc-900 dark:text-zinc-50 sm:text-xl md:text-2xl">
             {current.question}
           </h2>
-          <ul className="mt-5 space-y-2.5">
+
+          <ul className="grid gap-2 sm:gap-2.5">
             {current.options.map((opt: string, i: number) => {
               const checked = selected === i;
               return (
                 <li key={i}>
                   <label
-                    className={`flex cursor-pointer items-start gap-3 rounded-xl border-2 px-4 py-3 transition sm:items-center ${
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 px-3 py-2.5 transition sm:px-4 sm:py-3 ${
                       checked
                         ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200 dark:border-emerald-500 dark:bg-emerald-950/40 dark:ring-emerald-900/60"
                         : "border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-600 dark:hover:bg-zinc-900/80"
@@ -326,11 +328,11 @@ function QuizPageInner() {
                       value={i}
                       checked={checked}
                       onChange={() => setSelected(i)}
-                      className="mt-0.5 h-4 w-4 shrink-0 sm:mt-0"
+                      className="sr-only"
                       disabled={submitting || completing}
                     />
                     <span
-                      className={`inline-flex size-6 shrink-0 items-center justify-center rounded-full font-mono text-xs ${
+                      className={`inline-flex size-7 shrink-0 items-center justify-center rounded-full font-mono text-xs font-semibold ${
                         checked
                           ? "bg-emerald-600 text-white"
                           : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
@@ -338,7 +340,7 @@ function QuizPageInner() {
                     >
                       {String.fromCharCode(65 + i)}
                     </span>
-                    <span className="min-w-0 flex-1 text-base text-zinc-900 dark:text-zinc-50">
+                    <span className="min-w-0 flex-1 text-sm text-zinc-900 dark:text-zinc-50 sm:text-base">
                       {opt}
                     </span>
                   </label>
@@ -346,34 +348,26 @@ function QuizPageInner() {
               );
             })}
           </ul>
-        </div>
 
-        {submitError ? (
-          <ErrorPlaceholder title="Could not submit answer">
-            {submitError}
-          </ErrorPlaceholder>
-        ) : null}
+          {submitError ? (
+            <p
+              className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300"
+              role="alert"
+            >
+              {submitError}
+            </p>
+          ) : null}
 
-        <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-zinc-500 sm:max-w-xs">
-            Backtracking is disabled - pick the answer you mean to commit to.
-          </p>
           <button
             type="button"
             onClick={handleSubmit}
             disabled={selected === null || submitting || completing}
-            className="inline-flex h-12 w-full items-center justify-center rounded-full bg-emerald-600 px-8 text-base font-semibold text-white shadow-lg shadow-emerald-600/25 transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-[220px]"
+            className="mt-1 inline-flex h-12 w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 text-base font-semibold text-white shadow-lg shadow-emerald-600/25 transition hover:bg-emerald-500 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 sm:h-14 sm:text-lg"
           >
-            {completing
-              ? "Completing quiz…"
-              : submitting
-                ? "Saving…"
-                : isLast
-                  ? "Submit final answer"
-                  : "Next question"}
+            {buttonLabel}
           </button>
         </div>
       </div>
-    </PageShell>
+    </div>
   );
 }

@@ -98,8 +98,8 @@ These assumptions unblock development while client questions are open. They may 
 
 | Path | Role |
 |------|------|
-| `/` | Landing - loads active demo event by slug, shows event title + "How it works" instructions, captures display name (validated), calls `createQuizSession`, routes to `/quiz` or `/results`. |
-| `/quiz` | Per-question flow (one question at a time, progress bar + percent, score hidden, no backtracking, resume-aware). Direct hits without `event` + `sessionId` show a polished `RouteError` with a **Start from home** CTA. |
+| `/` | Landing - loads active demo event by slug, **tablet-kiosk activation screen** (two-column on `md+`: oversized **"Take the Quiz"** headline + supporting line + 3 rule chips (`15 questions`, `Score at the end`, `One attempt per name`) on the left; large name input + dominant **"Take Quiz Now"** primary button + secondary **View leaderboard** on the right). Brand/event shown as small pills. Stacks on mobile. Footer hidden so the kiosk fills the available height. Calls `createQuizSession` and routes to `/quiz` or `/results`. |
+| `/quiz` | Per-question flow (one question at a time, slim progress bar, score hidden, no backtracking, resume-aware). **Tablet/kiosk-first layout**: header + question card fit a typical viewport without scrolling, the action button (`Next question` / `Submit final answer`) lives inside the card directly under the options. Footer is hidden on `/quiz`. Direct hits without `event` + `sessionId` show a polished `RouteError` with a **Start from home** CTA. |
 | `/results` | Celebratory result card (score, percentage, rating, time taken, rank within event when computable) + leaderboard / projection / home CTAs. Direct hits without `sessionId` show a polished `RouteError`. |
 | `/leaderboard` | Per-event live ranking (resolves `demo-event` → eventId). Top-3 medals, rank chips, percentage + rating per row. |
 | `/display` | External projection screen for the demo event's leaderboard - site chrome hidden, top 10 only, oversized typography, high contrast, "Exit projection" link. |
@@ -165,7 +165,7 @@ Run through this **in order** for a fresh production launch (or any time you cha
 
 ## Visitor Flow (implemented)
 
-1. **Landing `/`** loads the active event with slug `demo-event` and asks for a display name.
+1. **Landing `/`** loads the active event with slug `demo-event` and shows a **tablet-kiosk activation screen** that fills the available viewport (footer hidden on `/`). Left column: small **EventPulse** + event-title pills, oversized **"Take the Quiz"** headline, the line *"Answer 15 questions and see where you rank."*, and three rule chips (`15 questions`, `Score at the end`, `One attempt per name`). Right column: an oversized name input and a dominant **"Take Quiz Now"** button, with a secondary **View leaderboard** link. On mobile the card stacks vertically and scrolls.
 2. The page builds a deterministic `visitorIdentifier = ${eventId}:${slug(name)}` (lowercased, hyphenated, alphanumeric only).
 3. `createQuizSession({ eventId, visitorName, visitorIdentifier })` is called:
    - **No prior session** → new `in_progress` session is inserted.

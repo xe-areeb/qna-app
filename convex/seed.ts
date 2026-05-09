@@ -17,7 +17,7 @@ import { assertAdmin } from "./adminAuth";
 const DEMO_EVENT_SLUG = "demo-event";
 const DEMO_EVENT_TITLE = "EventPulse Demo";
 const DEMO_EVENT_DESCRIPTION =
-  "Join the live event quiz, answer each question one by one, and see your score at the end.";
+  "Join the live quiz, answer each question one by one, and see your score at the end.";
 
 type DemoQuestion = {
   question: string;

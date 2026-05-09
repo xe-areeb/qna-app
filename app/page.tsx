@@ -11,14 +11,10 @@ import { ErrorPlaceholder } from "@/components/error-placeholder";
 
 const DEMO_EVENT_SLUG = "demo-event";
 
-/**
- * Build the per-event visitor identifier from a chosen display name.
- *
- * NOTE: This is a *temporary* identity stand-in until visitor auth is wired.
- * It deliberately means two visitors who both type "Alice" on the same event
- * collide and share a single attempt - acceptable for a demo, **not** for a
- * public competition. Replace once Convex Auth is integrated.
- */
+/** Kiosk headline + supporting line shown to passersby on `/`. */
+const HOME_HEADLINE = "Take the Quiz";
+const HOME_SUBLINE = "Answer 15 questions and see where you rank.";
+
 function visitorIdentifier(eventId: Id<"events">, displayName: string): string {
   const slug = displayName
     .toLowerCase()
@@ -61,31 +57,37 @@ export default function HomePage() {
 
   if (!hasUrl) {
     return (
-      <Centered>
-        <ErrorPlaceholder title="Live data is unavailable">
-          The event isn’t connected right now. Please check back shortly or
-          contact the event organiser.
-        </ErrorPlaceholder>
-      </Centered>
+      <HomeStage>
+        <StatusCard>
+          <ErrorPlaceholder title="Live data is unavailable">
+            The event isn’t connected right now. Please check back shortly or
+            contact the event organiser.
+          </ErrorPlaceholder>
+        </StatusCard>
+      </HomeStage>
     );
   }
 
   if (event === undefined) {
     return (
-      <Centered>
-        <LoadingPlaceholder label="Loading event…" />
-      </Centered>
+      <HomeStage>
+        <StatusCard>
+          <LoadingPlaceholder label="Loading event…" />
+        </StatusCard>
+      </HomeStage>
     );
   }
 
   if (event === null) {
     return (
-      <Centered>
-        <ErrorPlaceholder title="Event not ready yet">
-          The quiz hasn’t been opened by the organiser yet. Please check back
-          shortly.
-        </ErrorPlaceholder>
-      </Centered>
+      <HomeStage>
+        <StatusCard>
+          <ErrorPlaceholder title="Event not ready yet">
+            The quiz hasn’t been opened by the organiser yet. Please check back
+            shortly.
+          </ErrorPlaceholder>
+        </StatusCard>
+      </HomeStage>
     );
   }
 
@@ -123,125 +125,141 @@ export default function HomePage() {
     }
   }
 
+  const questionsLabel =
+    totalQuestions != null ? `${totalQuestions} questions` : "15 questions";
+
   return (
-    <Centered>
-      <div className="w-full max-w-xl space-y-8 text-center">
-        <p className="text-xs font-medium uppercase tracking-[0.25em] text-emerald-700 dark:text-emerald-400">
-          EventPulse
-        </p>
-        <h1 className="text-4xl font-semibold tracking-tight text-zinc-900 dark:text-white md:text-5xl">
-          {event.title}
-        </h1>
-        <p className="text-sm italic text-zinc-500 dark:text-zinc-400">
-          Live quiz engagement and audience rankings for events.
-        </p>
-        {event.description ? (
-          <p className="text-base text-zinc-600 dark:text-zinc-400">
-            {event.description}
-          </p>
-        ) : null}
+    <HomeStage>
+      <article className="relative grid w-full overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-2xl shadow-emerald-900/10 ring-1 ring-zinc-900/5 dark:border-zinc-800 dark:bg-zinc-900/60 dark:shadow-emerald-400/10 dark:ring-white/5 md:grid-cols-[7fr_5fr]">
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl dark:bg-emerald-500/10"
+          />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl dark:bg-emerald-400/10"
+          />
 
-        <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-left text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-300">
-          <p className="mb-3 text-xs font-medium uppercase tracking-wide text-zinc-500">
-            How it works
+        <section className="relative flex flex-col justify-center gap-6 bg-gradient-to-br from-emerald-50 via-white to-white px-6 py-8 dark:from-emerald-950/40 dark:via-zinc-900/60 dark:to-zinc-900/60 sm:px-10 sm:py-10 md:px-12 md:py-12">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-700 shadow-sm dark:border-emerald-900/60 dark:bg-zinc-900/80 dark:text-emerald-300">
+              <span aria-hidden className="inline-block size-1.5 rounded-full bg-emerald-500" />
+              EventPulse
+            </span>
+            <span className="inline-flex items-center rounded-full bg-zinc-900/5 px-3 py-1 text-xs font-medium text-zinc-700 dark:bg-white/10 dark:text-zinc-200">
+              {event.title}
+            </span>
+          </div>
+
+          <h1 className="text-5xl font-bold leading-[1.05] tracking-tight text-zinc-900 dark:text-white sm:text-6xl md:text-7xl">
+            {HOME_HEADLINE}
+          </h1>
+          <p className="max-w-md text-lg leading-snug text-zinc-700 dark:text-zinc-200 sm:text-xl">
+            {HOME_SUBLINE}
           </p>
-          <ul className="space-y-2">
-            <li className="flex gap-2">
-              <span aria-hidden className="text-emerald-600 dark:text-emerald-400">•</span>
-              <span>
-                {totalQuestions != null ? (
-                  <>
-                    Answer <strong>{totalQuestions}</strong> multiple-choice questions, one at a time.
-                  </>
-                ) : (
-                  <>Answer the multiple-choice questions, one at a time.</>
-                )}
-              </span>
-            </li>
-            <li className="flex gap-2">
-              <span aria-hidden className="text-emerald-600 dark:text-emerald-400">•</span>
-              <span>
-                Your score, percentage, and rating are revealed{" "}
-                <strong>only after the final question</strong>.
-              </span>
-            </li>
-            <li className="flex gap-2">
-              <span aria-hidden className="text-emerald-600 dark:text-emerald-400">•</span>
-              <span>
-                Each display name can complete{" "}
-                <strong>only one attempt</strong> for this event.
-              </span>
-            </li>
-            <li className="flex gap-2">
-              <span aria-hidden className="text-emerald-600 dark:text-emerald-400">•</span>
-              <span>
-                Backtracking is disabled - pick the answer you mean to commit to.
-              </span>
-            </li>
+
+          <ul className="flex flex-wrap gap-2 pt-1">
+            <RuleChip>{questionsLabel}</RuleChip>
+            <RuleChip>Score at the end</RuleChip>
+            <RuleChip>One attempt per name</RuleChip>
           </ul>
-        </div>
+        </section>
 
-        <form
-          onSubmit={handleStart}
-          className="flex flex-col items-center gap-4"
-          noValidate
-        >
-          <label className="w-full max-w-md text-left">
-            <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-zinc-500">
-              Display name
-            </span>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={submitting}
-              required
-              minLength={2}
-              maxLength={40}
-              autoFocus
-              autoComplete="off"
-              spellCheck={false}
-              placeholder="e.g. Alex"
-              aria-invalid={Boolean(error)}
-              className="w-full rounded-full border border-zinc-300 bg-white px-5 py-3 text-base text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
-            />
-            <span className="mt-1 block text-xs text-zinc-500">
-              2–40 characters · letters, numbers and spaces work best.
-            </span>
-          </label>
-          {error ? (
-            <p className="text-sm text-red-600 dark:text-red-400" role="alert">
-              {error}
+        <section className="relative flex flex-col justify-center gap-5 bg-white px-6 py-8 dark:bg-zinc-900/40 sm:px-10 sm:py-10 md:px-12 md:py-12">
+          <div className="space-y-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-700 dark:text-emerald-400">
+              Ready to play?
             </p>
-          ) : null}
-          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-white sm:text-3xl">
+              Enter your name
+            </h2>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              This is what shows up on the leaderboard.
+            </p>
+          </div>
+
+          <form onSubmit={handleStart} className="flex flex-col gap-4" noValidate>
+            <label className="block">
+              <span className="sr-only">Display name</span>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={submitting}
+                required
+                minLength={2}
+                maxLength={40}
+                autoFocus
+                autoComplete="off"
+                spellCheck={false}
+                placeholder="Your name"
+                aria-invalid={Boolean(error)}
+                aria-label="Display name"
+                className="h-14 w-full rounded-2xl border-2 border-zinc-200 bg-white px-5 text-lg text-zinc-900 transition focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 sm:h-16 sm:text-xl"
+              />
+            </label>
+
+            {error ? (
+              <p
+                className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300"
+                role="alert"
+              >
+                {error}
+              </p>
+            ) : null}
+
             <button
               type="submit"
               disabled={submitting || !nameValid}
-              className="inline-flex h-12 min-w-[200px] items-center justify-center rounded-full bg-emerald-600 px-8 text-base font-semibold text-white shadow-lg shadow-emerald-600/25 transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex h-14 w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 text-lg font-semibold text-white shadow-xl shadow-emerald-600/30 transition hover:bg-emerald-500 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 sm:h-16 sm:text-xl"
             >
-              {submitting ? "Starting…" : "Start quiz"}
+              {submitting ? "Starting…" : "Take Quiz Now"}
             </button>
+
             <Link
               href="/leaderboard"
-              className="inline-flex h-12 min-w-[180px] items-center justify-center rounded-full border border-zinc-300 bg-white px-8 text-base font-semibold text-zinc-900 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:hover:bg-zinc-800"
+              className="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-zinc-300 bg-white px-6 text-base font-medium text-zinc-700 transition hover:bg-zinc-50 active:scale-[0.99] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
             >
               View leaderboard
             </Link>
-          </div>
-          <p className="text-xs text-zinc-500">
-            Returning with the same name? You’ll resume an in-progress run, or
-            jump straight to your result if you’ve already finished.
-          </p>
-        </form>
-      </div>
-    </Centered>
+
+            <p className="text-center text-xs text-zinc-500">
+              Use the same name to resume your quiz.
+            </p>
+          </form>
+        </section>
+      </article>
+    </HomeStage>
   );
 }
 
-function Centered({ children }: { children: React.ReactNode }) {
+function RuleChip({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
+    <li className="inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-white px-3 py-1.5 text-sm font-medium text-zinc-800 shadow-sm dark:border-emerald-900/50 dark:bg-zinc-900/70 dark:text-zinc-100">
+      <span aria-hidden className="inline-block size-1.5 rounded-full bg-emerald-500" />
+      {children}
+    </li>
+  );
+}
+
+/**
+ * Landing stage. On tablet / desktop the kiosk card fills the available
+ * vertical space (header takes the rest) without scrolling. On mobile the
+ * stage scrolls naturally.
+ */
+function HomeStage({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex min-h-0 flex-1 flex-col items-stretch overflow-y-auto px-4 py-5 sm:px-6 sm:py-6 md:items-center md:justify-center md:px-8 md:py-6">
+      <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center md:flex-none">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function StatusCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mx-auto w-full max-w-xl rounded-3xl border border-zinc-200 bg-white p-8 shadow-xl shadow-emerald-900/5 ring-1 ring-zinc-900/5 dark:border-zinc-800 dark:bg-zinc-900/60 dark:ring-white/5">
       {children}
     </div>
   );

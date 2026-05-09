@@ -73,9 +73,9 @@ function ResultsInner() {
   if (!hasUrl) {
     return (
       <PageShell title="Results">
-        <ErrorPlaceholder title="Convex URL not configured">
-          Set <code className="font-mono text-xs">NEXT_PUBLIC_CONVEX_URL</code>{" "}
-          and reload.
+        <ErrorPlaceholder title="Live data is unavailable">
+          Your result isn’t available right now. Please check back shortly or
+          contact the event organiser.
         </ErrorPlaceholder>
       </PageShell>
     );
