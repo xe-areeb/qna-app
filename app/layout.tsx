@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Quiz Leaderboard",
-  description: "Take the quiz and compete on the live leaderboard.",
+  title: "EventPulse",
+  description: "Live quiz engagement and audience rankings for events.",
 };
 
 export default function RootLayout({

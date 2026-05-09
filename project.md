@@ -1,8 +1,10 @@
-# Quiz Leaderboard — Project Overview
+# EventPulse — Project Overview
+
+> Live quiz engagement and audience rankings for events.
 
 ## Purpose
 
-A public, event-based quiz competition app: visitors complete a multiple-choice quiz **for a specific event**, then rank against others on a **per-event live leaderboard**. A projection-friendly display shows event rankings on a large screen.
+EventPulse is a public, event-based quiz leaderboard app: visitors complete a multiple-choice quiz **for a specific event**, then rank against others on a **per-event live leaderboard**. A projection-friendly display shows event rankings on a large screen.
 
 ## Event-based Product Direction
 
@@ -70,11 +72,12 @@ These assumptions unblock development while client questions are open. They may 
 - [x] Full-screen `/display` route for projection — site chrome hidden, top 10 only, oversized typography, high contrast, "Exit projection" escape hatch, live updates.
 - [x] Polished error states for direct hits to `/quiz` and `/results` (no params) with a clear "Start from home" CTA via shared `RouteError` component.
 - [x] Per-event analytics dashboard at `/admin/analytics` (totals + per-question correctness bars).
-- [x] **Reset demo responses** danger-zone action on `/admin/analytics` and `/admin/questions` — deletes every visitor session + answer for the demo event while preserving the event and its questions. Wraps the `seed.resetDemoEventResponses` mutation with a browser `confirm`.
+- [x] **Reset responses** danger-zone action on `/admin/analytics` and `/admin/questions` — deletes every visitor session + answer for the selected event while preserving the event and its questions. Wraps the `seed.resetDemoEventResponses` mutation with a browser `confirm`. Visible UI no longer mentions internal function names or implementation details.
 - [x] **MVP admin gate** at `/admin` — single shared `ADMIN_ACCESS_CODE` (Convex env var) checked server-side. Unlocked code is cached in `sessionStorage` and forwarded to every protected mutation + analytics query. UI routes (`/admin/questions`, `/admin/analytics`) are wrapped in `AdminGate`; locked visitors see an "Admin access required" card with a CTA to `/admin`.
 - [ ] Admin CRUD for **events** (Convex mutations exist; UI not built yet — only the seed flow creates events from the UI).
 - [x] Admin CRUD for **questions** (per event) — list (active only), create, **edit in place** (`adminUpdateQuestion`), hard-delete. *Reorder UI is still TODO.*
-- [x] Seed sample event + questions (`seedDemoEvent` mutation + admin "Seed demo event" button; demo event slug `demo-event`).
+- [x] Seed sample event + questions (`seedDemoEvent` mutation + admin **Create demo event** button in the UI; demo event slug `demo-event`).
+- [x] **Client-facing UI cleanup pass** — branding standardised on **EventPulse** with the tagline "Live quiz engagement and audience rankings for events." across header, footer, metadata, landing, and display. All visible references to internal stack names, function names, `MVP gate`, `TODO`, `Convex Auth`, `sessionStorage`, "hard delete", and local-development hints have been replaced with audience-friendly copy. The same notes are preserved in this doc, `technical.md`, and `README.md` for the team.
 - [ ] Visitor auth (deferred — display name only for v1).
 - [x] **MVP admin gate** in place (shared `ADMIN_ACCESS_CODE` on Convex; `/admin` unlock; `AdminGate` wrapper). Per-user role-based admin auth (Convex Auth) still deferred.
 - [x] **Cloudflare deployment ready** — Next.js static export (`output: "export"`) → Cloudflare Pages with `out/` as the build output directory. No adapter required for the current feature set.
@@ -101,8 +104,8 @@ These assumptions unblock development while client questions are open. They may 
 | `/leaderboard` | Per-event live ranking (resolves `demo-event` → eventId). Top-3 medals, rank chips, percentage + rating per row. |
 | `/display` | External projection screen for the demo event's leaderboard — site chrome hidden, top 10 only, oversized typography, high contrast, "Exit projection" link. |
 | `/admin` | Admin entry point — unlock form when locked (verifies `ADMIN_ACCESS_CODE` server-side), or admin sub-nav (Questions, Analytics) + Lock-admin button when unlocked. |
-| `/admin/questions` | Question management (gated) — event picker, list (active only), create form, **inline edit per row** (Save / Cancel), hard delete, "Seed demo event" button, **Reset demo responses** danger-zone. Only one row can be in edit mode at a time; other rows' Edit/Delete buttons are disabled while editing. |
-| `/admin/analytics` | Per-event analytics (gated) — totals (completed, in-progress, average score / percentage, highest score, fastest top-scorer time, active questions) + per-question correctness bars + **Reset demo responses** danger-zone. |
+| `/admin/questions` | Question management (gated) — event picker, list (active only), create form, **inline edit per row** (Save / Cancel), hard delete, **Create demo event** button (UI label; backed by `seed.seedDemoEvent`), **Reset responses** danger-zone. Only one row can be in edit mode at a time; other rows' Edit/Delete buttons are disabled while editing. |
+| `/admin/analytics` | Per-event analytics (gated) — totals (completed, in-progress, average score / percentage, highest score, fastest top-scorer time, active questions) + per-question correctness bars + **Reset responses** danger-zone. |
 
 ## Deployment Targets
 

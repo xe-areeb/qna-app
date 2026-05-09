@@ -35,10 +35,9 @@ export default function AdminLandingPage() {
   if (!hasUrl) {
     return (
       <PageShell title="Admin">
-        <ErrorPlaceholder title="Convex URL not configured">
-          Run <code className="font-mono text-xs">npm run convex:dev</code> and set{" "}
-          <code className="font-mono text-xs">NEXT_PUBLIC_CONVEX_URL</code> in{" "}
-          <code className="font-mono text-xs">.env.local</code>, then reload.
+        <ErrorPlaceholder title="Admin tools are unavailable">
+          The admin area isn’t connected right now. Please contact the event
+          organiser.
         </ErrorPlaceholder>
       </PageShell>
     );
@@ -80,13 +79,13 @@ export default function AdminLandingPage() {
     return (
       <PageShell
         title="Admin"
-        description="Demo admin gate is unlocked for this browser tab. Pick a tool below."
+        description="Admin tools are unlocked for this browser tab. Pick a tool below."
       >
         <div className="grid gap-3 sm:grid-cols-2">
           <AdminLink
             href="/admin/questions"
             title="Questions"
-            description="Manage event questions, seed the demo event, reset responses."
+            description="Manage event questions, set up the demo event, and reset responses."
           />
           <AdminLink
             href="/admin/analytics"
@@ -105,8 +104,8 @@ export default function AdminLandingPage() {
                 Lock admin
               </h3>
               <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
-                Wipes the admin code from this tab. You’ll need to re-enter
-                it before using any protected admin tools.
+                Sign out of the admin tools for this browser tab. You’ll need
+                to re-enter the access code before using them again.
               </p>
             </div>
             <button
@@ -118,12 +117,6 @@ export default function AdminLandingPage() {
             </button>
           </div>
         </section>
-
-        <p className="text-xs text-zinc-500">
-          MVP gate: a single shared code stored in <code className="font-mono">sessionStorage</code>.
-          Replace with Convex Auth + role checks before any production
-          deployment.
-        </p>
       </PageShell>
     );
   }
@@ -131,16 +124,12 @@ export default function AdminLandingPage() {
   return (
     <PageShell
       title="Admin"
-      description="Enter the demo admin access code to unlock question management, analytics, and reset tools."
+      description="Admin access is required to manage questions, analytics, and event controls. Enter the access code to continue."
     >
       {isAdminConfigured === false ? (
-        <ErrorPlaceholder title="Admin access not configured on the server">
-          Set the secret with{" "}
-          <code className="font-mono text-xs">
-            npx convex env set ADMIN_ACCESS_CODE &lt;code&gt;
-          </code>{" "}
-          and reload this page. See <code className="font-mono text-xs">README.md</code>{" "}
-          for details.
+        <ErrorPlaceholder title="Admin access is not yet available">
+          Admin access hasn’t been set up for this deployment yet. Please
+          contact the event organiser.
         </ErrorPlaceholder>
       ) : null}
 
@@ -194,11 +183,8 @@ export default function AdminLandingPage() {
       </form>
 
       <p className="text-xs text-zinc-500">
-        The code is checked server-side against{" "}
-        <code className="font-mono">ADMIN_ACCESS_CODE</code> on your Convex
-        deployment, then cached in this tab’s{" "}
-        <code className="font-mono">sessionStorage</code>. MVP only — not a
-        replacement for proper auth.
+        Access is verified securely. Your code is remembered for this browser
+        tab only and is cleared when you lock admin or close the tab.
       </p>
     </PageShell>
   );

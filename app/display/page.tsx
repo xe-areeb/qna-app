@@ -38,7 +38,7 @@ export default function DisplayPage() {
             Live leaderboard
           </p>
           <h1 className="mt-3 text-5xl font-bold tracking-tight md:text-7xl">
-            {event && event !== null ? event.title : "Quiz Leaderboard"}
+            {event && event !== null ? event.title : "EventPulse"}
           </h1>
           {event && event !== null ? (
             <p className="mt-4 text-lg text-zinc-400 md:text-2xl">
@@ -49,13 +49,13 @@ export default function DisplayPage() {
 
         {!hasUrl ? (
           <p className="text-center text-2xl text-zinc-300">
-            Convex URL not configured.
+            Live leaderboard is currently unavailable.
           </p>
         ) : event === undefined ? (
           <p className="text-center text-2xl text-zinc-400">Loading event…</p>
         ) : event === null ? (
           <p className="text-center text-2xl text-zinc-400">
-            Demo event is not active. Seed it from /admin/questions.
+            Waiting for the event to go live.
           </p>
         ) : (
           <LeaderboardPanel

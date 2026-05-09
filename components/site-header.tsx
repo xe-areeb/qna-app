@@ -15,7 +15,7 @@ export function SiteHeader() {
           href="/"
           className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
         >
-          Quiz Leaderboard
+          EventPulse
         </Link>
         <nav className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
           {nav.map((item) => (

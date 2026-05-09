@@ -62,10 +62,9 @@ export default function HomePage() {
   if (!hasUrl) {
     return (
       <Centered>
-        <ErrorPlaceholder title="Convex URL not configured">
-          Run <code className="font-mono text-xs">npm run convex:dev</code> and set{" "}
-          <code className="font-mono text-xs">NEXT_PUBLIC_CONVEX_URL</code> in{" "}
-          <code className="font-mono text-xs">.env.local</code>, then reload.
+        <ErrorPlaceholder title="Live data is unavailable">
+          The event isn’t connected right now. Please check back shortly or
+          contact the event organiser.
         </ErrorPlaceholder>
       </Centered>
     );
@@ -82,13 +81,9 @@ export default function HomePage() {
   if (event === null) {
     return (
       <Centered>
-        <ErrorPlaceholder title="Demo event not available">
-          The active event with slug <code className="font-mono">demo-event</code>
-          {" "}was not found. Visit{" "}
-          <Link href="/admin/questions" className="font-semibold underline">
-            /admin/questions
-          </Link>{" "}
-          and click <strong>Seed demo event</strong>.
+        <ErrorPlaceholder title="Event not ready yet">
+          The quiz hasn’t been opened by the organiser yet. Please check back
+          shortly.
         </ErrorPlaceholder>
       </Centered>
     );
@@ -132,11 +127,14 @@ export default function HomePage() {
     <Centered>
       <div className="w-full max-w-xl space-y-8 text-center">
         <p className="text-xs font-medium uppercase tracking-[0.25em] text-emerald-700 dark:text-emerald-400">
-          Live event leaderboard
+          EventPulse
         </p>
         <h1 className="text-4xl font-semibold tracking-tight text-zinc-900 dark:text-white md:text-5xl">
           {event.title}
         </h1>
+        <p className="text-sm italic text-zinc-500 dark:text-zinc-400">
+          Live quiz engagement and audience rankings for events.
+        </p>
         {event.description ? (
           <p className="text-base text-zinc-600 dark:text-zinc-400">
             {event.description}

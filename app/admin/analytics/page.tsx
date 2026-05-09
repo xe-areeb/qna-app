@@ -90,10 +90,9 @@ function AdminAnalyticsInner({ adminCode }: { adminCode: string }) {
   if (!hasUrl) {
     return (
       <PageShell title="Analytics">
-        <ErrorPlaceholder title="Convex URL not configured">
-          Run <code className="font-mono text-xs">npm run convex:dev</code> and set{" "}
-          <code className="font-mono text-xs">NEXT_PUBLIC_CONVEX_URL</code> in{" "}
-          <code className="font-mono text-xs">.env.local</code>, then reload.
+        <ErrorPlaceholder title="Analytics are unavailable">
+          The admin area isn’t connected right now. Please contact the event
+          organiser.
         </ErrorPlaceholder>
       </PageShell>
     );
@@ -102,7 +101,7 @@ function AdminAnalyticsInner({ adminCode }: { adminCode: string }) {
   return (
     <PageShell
       title="Analytics"
-      description="Per-event totals and question-by-question correctness. Cross-event aggregates are a later milestone."
+      description="Per-event totals and question-by-question correctness."
     >
       <section className="rounded-2xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900/40">
         <label
@@ -115,12 +114,12 @@ function AdminAnalyticsInner({ adminCode }: { adminCode: string }) {
           <LoadingPlaceholder label="Loading events…" />
         ) : events.length === 0 ? (
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            No events yet. Seed the demo event from{" "}
+            No events yet. Set one up from{" "}
             <a
               href="/admin/questions"
               className="font-semibold text-emerald-700 underline hover:text-emerald-600 dark:text-emerald-400"
             >
-              /admin/questions
+              Questions
             </a>
             .
           </p>
@@ -291,12 +290,6 @@ function AdminAnalyticsInner({ adminCode }: { adminCode: string }) {
       </section>
 
       <ResetDemoButton adminCode={adminCode} />
-
-      <p className="text-xs text-amber-700 dark:text-amber-300">
-        Heads up: this dashboard is gated by the MVP admin code only —{" "}
-        <strong>TODO(auth)</strong> swap for Convex Auth + role checks before
-        deployment.
-      </p>
     </PageShell>
   );
 }

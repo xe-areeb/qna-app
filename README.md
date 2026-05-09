@@ -1,6 +1,8 @@
-# Quiz Leaderboard
+# EventPulse
 
-Public, **event-based** quiz competition app: visitors enter a display name and complete a multiple-choice quiz **for a specific event**, then rank on a **per-event live leaderboard** (Convex). Includes a **projection** view at `/display` for external screens.
+> Live quiz engagement and audience rankings for events.
+
+EventPulse is a public, **event-based** quiz leaderboard app: visitors enter a display name and complete a multiple-choice quiz **for a specific event**, then rank on a **per-event live leaderboard** (Convex). Includes a **projection** view at `/display` for external screens.
 
 ## Current assumptions (pending client confirmation)
 
@@ -261,9 +263,9 @@ npm run preview     # serves out/ on http://localhost:4173 via npx serve
 | Routes & shell UI | Working pages for `/`, `/quiz`, `/results`, `/leaderboard`, `/display`, `/admin`, `/admin/questions`, `/admin/analytics`. `SiteChrome` hides the global header/footer on `/display` for the projection view. |
 | Convex schema | `events`, `questions`, `quizSessions`, `answers` (event-scoped). |
 | Convex API | `events`: list / by-slug / admin CRUD. `questions`: list (by event) + admin CRUD. `quizSessions`: `createQuizSession`, `completeQuizSession`, `getLeaderboard`, `getQuizResult`, `getSessionAnsweredCount`, `getSessionRank`. `answers`: `submitAnswer`. `analytics`: `getEventAnalytics`, `getQuestionAnalytics`. `seed`: `seedDemoEvent`, `resetDemoEventResponses`. `adminAuth`: `verifyAdminCode`, `isAdminConfigured` (+ `assertAdmin` helper). |
-| Admin /questions page | Event picker, list (active only), create form, **inline edit per row** (Save / Cancel), hard delete, **Seed demo event** button, **Reset demo responses** danger-zone. Wrapped in `AdminGate`. Reorder UI still TODO. |
-| Admin /analytics page | Event picker, top-line stat cards (completed, in-progress, average score / percentage, highest score, fastest top-scorer time, active questions), per-question correctness bars, **Reset demo responses** danger-zone. Wrapped in `AdminGate`. Daily-trend chart is a clearly marked placeholder. |
-| Seed data | `seed.seedDemoEvent` creates the `demo-event` event (title `Demo Quiz Event`, `status: active`) and 15 sample questions; idempotent. Admin-gated. |
+| Admin /questions page | Event picker, list (active only), create form, **inline edit per row** (Save / Cancel), hard delete, **Create demo event** button, **Reset responses** danger-zone. Wrapped in `AdminGate`. Reorder UI still TODO. |
+| Admin /analytics page | Event picker, top-line stat cards (completed, in-progress, average score / percentage, highest score, fastest top-scorer time, active questions), per-question correctness bars, **Reset responses** danger-zone. Wrapped in `AdminGate`. Daily-trend chart is a clearly marked placeholder. |
+| Seed data | `seed.seedDemoEvent` creates the `demo-event` event (title `EventPulse Demo`, `status: active`) and 15 sample questions; idempotent. On reuse, also patches `title` / `description` back to the constants in `convex/seed.ts` if they have drifted. Admin-gated. |
 | Visitor flow | **Working & polished** — landing (instructions + validation) → quiz (large tap targets, percent progress, "Saving…" / "Completing quiz…" states) → results (rating-tinted card, formatted time, rank within event). |
 | Direct route errors | `/quiz` and `/results` opened without their URL params show a polished `RouteError` card with a **Start from home** CTA. |
 | Visitor auth | **Deferred** — display name + client `visitorIdentifier` (`${eventId}:${slug(name)}`). Same name + same event = shared attempt. |
@@ -276,10 +278,10 @@ See **`project.md`** and **`technical.md`** for the full product spec and techni
 After Convex is configured (`npm run convex:dev` + `NEXT_PUBLIC_CONVEX_URL` in `.env.local`):
 
 1. Run the dev server (`npm run dev`).
-2. Open [http://localhost:3000/admin/questions](http://localhost:3000/admin/questions).
-3. Click **Seed demo event**. The mutation is idempotent — re-running it never duplicates the event or its questions.
+2. Open [http://localhost:3000/admin](http://localhost:3000/admin), enter your `ADMIN_ACCESS_CODE` to unlock, then open [http://localhost:3000/admin/questions](http://localhost:3000/admin/questions).
+3. Click **Create demo event** (labelled this way in the UI; backed by the idempotent `seed.seedDemoEvent` mutation). Re-running it never duplicates the event or its questions.
 
-Alternatively, call `seed:seedDemoEvent` from the Convex dashboard (Functions → run with `{}` args).
+Alternatively, call `seed:seedDemoEvent` from the Convex dashboard (Functions → run with `{ adminCode: "<your-code>" }`).
 
 ## Visitor flow (end-to-end)
 
@@ -349,6 +351,7 @@ If the demo event hasn't been seeded yet, the call is a graceful no-op (it retur
 3. `npm run dev` — start the Next.js dev server in a second terminal.
 4. Visit `/admin`, unlock with the code you set, then open `/admin/questions` and click **Seed demo event** if you haven't already.
 5. Add admin **reorder** UI for questions (drag/drop or up/down — would call `adminUpdateQuestion({ order })` for the swapped rows). Edit-in-place is already shipped.
+   - The visible UI was scrubbed of internal/developer notes (function names, "MVP gate", "TODO", `sessionStorage`, "Convex Auth", "Seed demo event" → "Create demo event", "Reset demo responses" → "Reset responses", etc.). The same notes still live in this README, `project.md`, and `technical.md` for the team.
 6. Switch `adminDeleteQuestion` callers to a **soft archive** (flip `isActive`) before any production exposure.
 7. Make `getLeaderboard.eventId` required once an event picker reaches `/leaderboard`.
 8. Integrate Convex Auth and replace the shared-code admin gate with role-based per-user access.

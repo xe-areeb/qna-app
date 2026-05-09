@@ -15,9 +15,9 @@ import { assertAdmin } from "./adminAuth";
  */
 
 const DEMO_EVENT_SLUG = "demo-event";
-const DEMO_EVENT_TITLE = "Demo Quiz Event";
+const DEMO_EVENT_TITLE = "EventPulse Demo";
 const DEMO_EVENT_DESCRIPTION =
-  "Demo event seeded for local development. Safe to reseed — call seedDemoEvent multiple times.";
+  "Join the live event quiz, answer each question one by one, and see your score at the end.";
 
 type DemoQuestion = {
   question: string;
@@ -195,6 +195,18 @@ export const seedDemoEvent = mutationGeneric({
     let eventId;
     if (existingEvent) {
       eventId = existingEvent._id;
+      // Keep the seeded demo event in sync with the latest constants. This
+      // lets a rename (e.g. "Demo Quiz Event" → "EventPulse Demo") propagate
+      // by re-running the mutation, without needing a manual events admin UI.
+      const titleDrift = existingEvent.title !== DEMO_EVENT_TITLE;
+      const descDrift = existingEvent.description !== DEMO_EVENT_DESCRIPTION;
+      if (titleDrift || descDrift) {
+        await ctx.db.patch(eventId, {
+          title: DEMO_EVENT_TITLE,
+          description: DEMO_EVENT_DESCRIPTION,
+          updatedAt: now,
+        });
+      }
     } else {
       eventId = await ctx.db.insert("events", {
         title: DEMO_EVENT_TITLE,

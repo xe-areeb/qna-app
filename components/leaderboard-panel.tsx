@@ -48,9 +48,8 @@ export function LeaderboardPanel({
 
   if (!hasUrl) {
     return (
-      <ErrorPlaceholder title="Convex URL not configured">
-        Add <code className="font-mono text-xs">NEXT_PUBLIC_CONVEX_URL</code> from{" "}
-        <code className="font-mono text-xs">npx convex dev</code> to load live rankings.
+      <ErrorPlaceholder title="Live rankings are unavailable">
+        The leaderboard isn’t connected right now. Please check back shortly.
       </ErrorPlaceholder>
     );
   }

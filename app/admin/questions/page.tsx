@@ -127,7 +127,10 @@ function AdminQuestionsInner({ adminCode }: { adminCode: string }) {
     } catch (e) {
       setSeedStatus({
         state: "error",
-        message: e instanceof Error ? e.message : "Seed failed.",
+        message:
+          e instanceof Error
+            ? e.message
+            : "Could not set up the demo event.",
       });
     }
   }
@@ -135,10 +138,9 @@ function AdminQuestionsInner({ adminCode }: { adminCode: string }) {
   if (!hasUrl) {
     return (
       <PageShell title="Manage questions">
-        <ErrorPlaceholder title="Convex URL not configured">
-          Run <code className="font-mono text-xs">npm run convex:dev</code> and set{" "}
-          <code className="font-mono text-xs">NEXT_PUBLIC_CONVEX_URL</code> in{" "}
-          <code className="font-mono text-xs">.env.local</code>, then reload.
+        <ErrorPlaceholder title="Admin tools are unavailable">
+          The admin area isn’t connected right now. Please contact the event
+          organiser.
         </ErrorPlaceholder>
       </PageShell>
     );
@@ -147,7 +149,7 @@ function AdminQuestionsInner({ adminCode }: { adminCode: string }) {
   return (
     <PageShell
       title="Manage questions"
-      description="Per-event question CRUD. Gated by the MVP admin code — proper Convex Auth comes later."
+      description="Create, edit, and reorder the questions for each event."
     >
       <EventBar
         events={events}
@@ -182,7 +184,7 @@ function AdminQuestionsInner({ adminCode }: { adminCode: string }) {
           if (
             typeof window !== "undefined" &&
             !window.confirm(
-              "Delete this question? This is a hard delete for now.",
+              "Delete this question? It will be removed from this event.",
             )
           ) {
             return;
@@ -202,12 +204,6 @@ function AdminQuestionsInner({ adminCode }: { adminCode: string }) {
       ) : null}
 
       <ResetDemoButton adminCode={adminCode} />
-
-      <p className="text-xs text-amber-700 dark:text-amber-300">
-        Heads up: <code className="font-mono">adminDeleteQuestion</code> hard-deletes
-        today. TODO: switch to soft archive (flip <code className="font-mono">isActive</code>)
-        once historical answers/sessions matter.
-      </p>
     </PageShell>
   );
 }
@@ -239,7 +235,7 @@ function EventBar({
             <LoadingPlaceholder label="Loading events…" />
           ) : events.length === 0 ? (
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              No events yet. Use <strong>Seed demo event</strong> to create one.
+              No events yet. Use <strong>Create demo event</strong> to set one up.
             </p>
           ) : (
             <select
@@ -263,21 +259,23 @@ function EventBar({
           disabled={seedStatus.state === "loading"}
           className="inline-flex h-10 items-center justify-center rounded-full border border-emerald-600 bg-emerald-600 px-5 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {seedStatus.state === "loading" ? "Seeding…" : "Seed demo event"}
+          {seedStatus.state === "loading" ? "Setting up…" : "Create demo event"}
         </button>
       </div>
 
       {seedStatus.state === "ok" ? (
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-100">
-          Seed complete · event {seedStatus.result.createdEvent ? "created" : "reused"} ·
-          {" "}
-          {seedStatus.result.createdQuestions} new question(s),
-          {" "}
-          {seedStatus.result.existingQuestions} already present.
+          Demo event is ready ·{" "}
+          {seedStatus.result.createdQuestions > 0
+            ? `${seedStatus.result.createdQuestions} new question${seedStatus.result.createdQuestions === 1 ? "" : "s"} added`
+            : "questions are already in place"}
+          .
         </div>
       ) : null}
       {seedStatus.state === "error" ? (
-        <ErrorPlaceholder title="Seed failed">{seedStatus.message}</ErrorPlaceholder>
+        <ErrorPlaceholder title="Couldn’t set up the demo event">
+          {seedStatus.message}
+        </ErrorPlaceholder>
       ) : null}
     </section>
   );

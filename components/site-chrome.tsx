@@ -28,7 +28,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
       <SiteHeader />
       <main className="flex flex-1 flex-col">{children}</main>
       <footer className="border-t border-zinc-200 py-6 text-center text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
-        Quiz Leaderboard · Convex + Next.js
+        EventPulse · Live quiz engagement and audience rankings for events.
       </footer>
     </>
   );

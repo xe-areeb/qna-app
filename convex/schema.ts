@@ -2,7 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 /**
- * Quiz Leaderboard schema — event-scoped.
+ * EventPulse schema — event-scoped quiz leaderboard.
  *
  * NOTE: Visitor and admin auth are deferred. Visitor identity is captured via
  * `visitorIdentifier` (e.g. a client-generated id) plus a chosen `visitorName`.

@@ -35,11 +35,11 @@ type ResetStatus =
   | { state: "error"; message: string };
 
 const CONFIRM_MESSAGE =
-  "Reset demo responses?\n\n" +
-  "This deletes ALL visitor attempts and answers for the demo event.\n" +
-  "It does NOT delete the event or its questions.\n\n" +
-  "Analytics, leaderboard, and display will go back to empty until someone " +
-  "plays again.";
+  "Reset responses for this event?\n\n" +
+  "All visitor attempts and answers will be cleared. " +
+  "Questions will remain unchanged.\n\n" +
+  "Analytics, leaderboard, and display will return to empty until new " +
+  "visitors play.";
 
 export function ResetDemoButton({
   adminCode,
@@ -83,17 +83,12 @@ export function ResetDemoButton({
             Danger zone
           </p>
           <h3 className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-50">
-            Reset demo responses
+            Reset responses
           </h3>
           <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
-            Deletes every visitor attempt and answer for the{" "}
-            <code className="font-mono text-xs">demo-event</code>. The event
-            itself and its questions are preserved. Analytics, leaderboard,
-            and display will go back to empty.
-          </p>
-          <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
-            Gated by the MVP admin code only — replace with proper auth
-            before deployment.
+            Clears visitor attempts and answers for this event. Questions
+            will remain unchanged. Analytics, leaderboard, and display will
+            return to empty.
           </p>
         </div>
         <button
@@ -118,7 +113,7 @@ export function ResetDemoButton({
             </>
           ) : (
             <>
-              Demo event isn’t seeded yet, so there was nothing to clear.
+              The event hasn’t been set up yet, so there was nothing to clear.
             </>
           )}
         </div>

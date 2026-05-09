@@ -33,12 +33,12 @@ export function AdminGate({
           title="Admin access required"
           description={
             <>
-              This page is locked behind the demo admin code. Head to{" "}
-              <code className="font-mono text-xs">/admin</code> to unlock.
+              Admin access is required to manage questions, analytics, and
+              event controls. Sign in with your access code to continue.
             </>
           }
           primaryHref="/admin"
-          primaryLabel="Go to admin unlock"
+          primaryLabel="Sign in to admin"
           secondary={{ href: "/", label: "Back to home" }}
         />
       </div>
