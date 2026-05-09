@@ -292,7 +292,7 @@ Once the demo event is seeded, you can play through the full loop:
    - The same name + same event reuses the previous attempt - resume in-progress, or jump straight to results if completed.
 2. **`/quiz?event=demo-event&sessionId=…`** shows one question at a time with a `Question N of M` progress bar (and percent-complete readout). Picking an option flips a clear emerald ring; the submit button cycles **Next question → Saving… → Submit final answer → Completing quiz…** to block double-submits. Score is **not** revealed mid-quiz; backtracking is disabled.
 3. After the final answer, `completeQuizSession` runs and you're redirected to **`/results?sessionId=…`** with score, percentage, **rating** (Champion / Excellent / Good / Try Again), `Mm Ss`-formatted time, and a rank chip (e.g. `#3 of 12`) when the event already has completed runs. Buttons link to **View leaderboard**, **Open projection screen** (new tab), and **Back to home**.
-4. **`/leaderboard`** and **`/display`** show real-time rankings for the demo event. The leaderboard adds rank chips, top-3 medals, and per-row percentage + rating; the display screen hides the site chrome, jumps to oversized typography, shows the top **10**, and includes a small **Exit projection** link.
+4. **`/leaderboard`** and **`/display`** show real-time rankings for the demo event. The leaderboard adds rank chips, top-3 medals, and per-row percentage + rating; the display screen hides the site chrome, jumps to oversized typography, shows the top **5** in a fixed-height scoreboard layout (no scrolling), and includes a small **Exit projection** link.
 
 ### Direct-route behaviour
 

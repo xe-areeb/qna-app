@@ -163,38 +163,38 @@ function CompactList({ rows }: { rows: LeaderboardRow[] }) {
 
 function ProjectionList({ rows }: { rows: LeaderboardRow[] }) {
   return (
-    <ol className="space-y-4 md:space-y-5">
+    <ol className="flex min-h-0 flex-1 flex-col gap-2 md:gap-3">
       {rows.map((row, i) => {
         const rank = i + 1;
         const isTop = rank <= 3;
         const cardAccent =
           rank === 1
-            ? "from-amber-400/20 via-amber-500/10 to-transparent ring-amber-400/40"
+            ? "from-amber-400/25 via-amber-500/10 to-transparent ring-amber-400/50"
             : rank === 2
-              ? "from-zinc-300/20 via-zinc-400/10 to-transparent ring-zinc-300/30"
+              ? "from-zinc-300/25 via-zinc-400/10 to-transparent ring-zinc-300/40"
               : rank === 3
-                ? "from-orange-400/20 via-orange-500/10 to-transparent ring-orange-400/40"
+                ? "from-orange-400/25 via-orange-500/10 to-transparent ring-orange-400/50"
                 : "from-white/5 via-white/0 to-transparent ring-white/10";
         return (
           <li
             key={row._id}
-            className={`flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-gradient-to-r ${cardAccent} px-5 py-4 ring-1 backdrop-blur-sm md:px-8 md:py-6`}
+            className={`flex min-h-0 flex-1 items-center justify-between gap-3 rounded-2xl bg-gradient-to-r ${cardAccent} px-4 py-2 ring-1 backdrop-blur-sm md:gap-5 md:px-6 md:py-3`}
           >
-            <div className="flex min-w-0 items-center gap-4 md:gap-6">
+            <div className="flex min-w-0 items-center gap-3 md:gap-5">
               <span
                 className={`inline-flex shrink-0 items-center justify-center font-mono font-bold tabular-nums ${
                   isTop
-                    ? "text-4xl md:text-6xl"
-                    : "text-3xl text-zinc-400 md:text-5xl"
+                    ? "text-2xl md:text-4xl"
+                    : "text-xl text-zinc-400 md:text-3xl"
                 }`}
               >
                 {isTop ? MEDAL[rank] : `#${rank}`}
               </span>
               <div className="min-w-0">
-                <p className="truncate text-3xl font-bold tracking-tight md:text-5xl">
+                <p className="truncate text-xl font-bold tracking-tight md:text-3xl">
                   {row.visitorName ?? "Anonymous"}
                 </p>
-                <p className="mt-1 text-base text-zinc-400 md:text-xl">
+                <p className="text-xs leading-tight text-zinc-400 md:text-sm">
                   {row.percentage != null ? `${row.percentage}%` : "-"}
                   {row.rating ? ` · ${row.rating}` : ""}
                   {" · "}
@@ -202,7 +202,7 @@ function ProjectionList({ rows }: { rows: LeaderboardRow[] }) {
                 </p>
               </div>
             </div>
-            <span className="text-right text-3xl font-semibold tabular-nums md:text-5xl">
+            <span className="text-right text-2xl font-semibold tabular-nums md:text-4xl">
               {row.score ?? 0}
               <span className="ml-1 text-zinc-500">
                 /{row.totalQuestions ?? "?"}
