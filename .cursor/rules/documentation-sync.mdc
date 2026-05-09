@@ -19,7 +19,7 @@ Before finishing **any** coding task in this repo, reconcile documentation with 
 
 - Edit the relevant sections in place; keep headings stable.
 - Mark implemented checklist items in `project.md` with `[x]` when the corresponding feature lands.
-- After schema or API changes, reflect the **current** shape and function names—do not leave outdated tables or endpoints.
+- After schema or API changes, reflect the **current** shape and function names-do not leave outdated tables or endpoints.
 
 ## Scope
 

@@ -16,7 +16,7 @@ const DEMO_EVENT_SLUG = "demo-event";
  *
  * NOTE: This is a *temporary* identity stand-in until visitor auth is wired.
  * It deliberately means two visitors who both type "Alice" on the same event
- * collide and share a single attempt — acceptable for a demo, **not** for a
+ * collide and share a single attempt - acceptable for a demo, **not** for a
  * public competition. Replace once Convex Auth is integrated.
  */
 function visitorIdentifier(eventId: Id<"events">, displayName: string): string {
@@ -175,7 +175,7 @@ export default function HomePage() {
             <li className="flex gap-2">
               <span aria-hidden className="text-emerald-600 dark:text-emerald-400">•</span>
               <span>
-                Backtracking is disabled — pick the answer you mean to commit to.
+                Backtracking is disabled - pick the answer you mean to commit to.
               </span>
             </li>
           </ul>

@@ -28,13 +28,13 @@ import { AdminGate } from "@/components/admin-gate";
  *     server-side mutation never accepts/changes that field.
  *   - Hard delete a question via `adminDeleteQuestion`.
  *
- * TODO: question **reorder** UI (drag/drop or simple up/down) — would call
+ * TODO: question **reorder** UI (drag/drop or simple up/down) - would call
  * `adminUpdateQuestion({ order })` for the swapped rows.
  * TODO: an admin-only "list all questions" query so inactive questions are
  * visible here too. `listActiveQuestions` only returns `isActive === true`.
  * TODO: switch hard delete to soft archive (e.g. flip `isActive`) so historical
  * answers/sessions aren't orphaned in the future.
- * TODO(auth): MVP shared-code gate only — replace with Convex Auth + role
+ * TODO(auth): MVP shared-code gate only - replace with Convex Auth + role
  * checks before deployment.
  */
 
@@ -177,7 +177,7 @@ function AdminQuestionsInner({ adminCode }: { adminCode: string }) {
             order: values.order,
             isActive: values.isActive,
           });
-          // Exit edit mode only on success — errors stay inline in the form.
+          // Exit edit mode only on success - errors stay inline in the form.
           setEditingId(null);
         }}
         onDelete={async (id) => {
@@ -349,7 +349,7 @@ function QuestionList({
       </div>
     );
   }
-  // Disable Edit/Delete on every other row while one row is in edit mode —
+  // Disable Edit/Delete on every other row while one row is in edit mode -
   // keeps the data model and undo story simple (one outstanding draft).
   const otherRowEditing = (id: Id<"questions">) =>
     editingId !== null && editingId !== id;
@@ -606,7 +606,7 @@ function CreateQuestionForm({
  * edit mode. Prefilled from `initial`; calls `onSubmit` with the validated
  * patch on save, or `onCancel` to discard local edits and return to the
  * read-only card. The parent owns the `editingId` state and exits edit mode
- * (sets `editingId = null`) only when `onSubmit` resolves successfully —
+ * (sets `editingId = null`) only when `onSubmit` resolves successfully -
  * errors stay inline here so the user can fix and retry without losing their
  * draft.
  *
@@ -672,7 +672,7 @@ function EditQuestionForm({
         order,
         isActive,
       });
-      // Parent unmounts this form on success — no local reset needed.
+      // Parent unmounts this form on success - no local reset needed.
     } catch (err) {
       setError(err instanceof Error ? err.message : "Update failed.");
     } finally {

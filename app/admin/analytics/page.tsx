@@ -35,7 +35,7 @@ type EventDoc = {
 };
 
 function formatTime(ms: number | null): string {
-  if (ms == null || ms < 0) return "—";
+  if (ms == null || ms < 0) return "-";
   if (ms < 60_000) return `${(ms / 1000).toFixed(1)}s`;
   const totalSeconds = Math.floor(ms / 1000);
   const minutes = Math.floor(totalSeconds / 60);
@@ -270,7 +270,7 @@ function AdminAnalyticsInner({ adminCode }: { adminCode: string }) {
                     <span className="tabular-nums text-zinc-500">
                       {q.correctPercentage != null
                         ? `${q.correctPercentage}%`
-                        : "—"}
+                        : "-"}
                     </span>
                   </div>
                   <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
@@ -307,7 +307,7 @@ function Stat({
   value,
   loading,
   format,
-  empty = "—",
+  empty = "-",
   subtle = false,
 }: {
   label: string;

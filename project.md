@@ -1,4 +1,4 @@
-# EventPulse — Project Overview
+# EventPulse - Project Overview
 
 > Live quiz engagement and audience rankings for events.
 
@@ -15,11 +15,11 @@ The product is moving from a single global quiz to a **multi-event** model:
 - Analytics start **per event**; cross-event aggregations can be layered later.
 - Branding is **global for now**; per-event branding can be added once the model is validated.
 
-This direction is implemented as an **incremental extension** of the existing scaffold — routes, components, and Convex functions are kept; the schema gains an `events` table and existing tables gain an `eventId`.
+This direction is implemented as an **incremental extension** of the existing scaffold - routes, components, and Convex functions are kept; the schema gains an `events` table and existing tables gain an `eventId`.
 
 ## Temporary Assumptions Pending Client Confirmation
 
-These assumptions unblock development while client questions are open. They may change without rebuilds — the schema is event-scoped from day one to absorb the answers cheaply.
+These assumptions unblock development while client questions are open. They may change without rebuilds - the schema is event-scoped from day one to absorb the answers cheaply.
 
 1. The app supports **multiple events**.
 2. Each event has its **own questions**.
@@ -67,45 +67,45 @@ These assumptions unblock development while client questions are open. They may 
 - [x] "Saving…" / "Completing quiz…" UI states; double-click and concurrent submission are guarded.
 - [x] Result calculation after final question: score, total questions, percentage, rating, time taken.
 - [x] Persist **completed quiz session** (final aggregates + timing) per event.
-- [x] Results screen after completion — celebratory rating-tinted card, `Mm Ss` time formatting, **rank within event** (#X of N) where computable, and CTAs for leaderboard / projection / home.
-- [x] **Real-time** per-event public leaderboard (Convex live queries) — rank chips, top-3 medals, percentage + rating per row, `/leaderboard` resolves `demo-event` and feeds `LeaderboardPanel`.
-- [x] Full-screen `/display` route for projection — site chrome hidden, top 10 only, oversized typography, high contrast, "Exit projection" escape hatch, live updates.
+- [x] Results screen after completion - celebratory rating-tinted card, `Mm Ss` time formatting, **rank within event** (#X of N) where computable, and CTAs for leaderboard / projection / home.
+- [x] **Real-time** per-event public leaderboard (Convex live queries) - rank chips, top-3 medals, percentage + rating per row, `/leaderboard` resolves `demo-event` and feeds `LeaderboardPanel`.
+- [x] Full-screen `/display` route for projection - site chrome hidden, top 10 only, oversized typography, high contrast, "Exit projection" escape hatch, live updates.
 - [x] Polished error states for direct hits to `/quiz` and `/results` (no params) with a clear "Start from home" CTA via shared `RouteError` component.
 - [x] Per-event analytics dashboard at `/admin/analytics` (totals + per-question correctness bars).
-- [x] **Reset responses** danger-zone action on `/admin/analytics` and `/admin/questions` — deletes every visitor session + answer for the selected event while preserving the event and its questions. Wraps the `seed.resetDemoEventResponses` mutation with a browser `confirm`. Visible UI no longer mentions internal function names or implementation details.
-- [x] **MVP admin gate** at `/admin` — single shared `ADMIN_ACCESS_CODE` (Convex env var) checked server-side. Unlocked code is cached in `sessionStorage` and forwarded to every protected mutation + analytics query. UI routes (`/admin/questions`, `/admin/analytics`) are wrapped in `AdminGate`; locked visitors see an "Admin access required" card with a CTA to `/admin`.
-- [ ] Admin CRUD for **events** (Convex mutations exist; UI not built yet — only the seed flow creates events from the UI).
-- [x] Admin CRUD for **questions** (per event) — list (active only), create, **edit in place** (`adminUpdateQuestion`), hard-delete. *Reorder UI is still TODO.*
+- [x] **Reset responses** danger-zone action on `/admin/analytics` and `/admin/questions` - deletes every visitor session + answer for the selected event while preserving the event and its questions. Wraps the `seed.resetDemoEventResponses` mutation with a browser `confirm`. Visible UI no longer mentions internal function names or implementation details.
+- [x] **MVP admin gate** at `/admin` - single shared `ADMIN_ACCESS_CODE` (Convex env var) checked server-side. Unlocked code is cached in `sessionStorage` and forwarded to every protected mutation + analytics query. UI routes (`/admin/questions`, `/admin/analytics`) are wrapped in `AdminGate`; locked visitors see an "Admin access required" card with a CTA to `/admin`.
+- [ ] Admin CRUD for **events** (Convex mutations exist; UI not built yet - only the seed flow creates events from the UI).
+- [x] Admin CRUD for **questions** (per event) - list (active only), create, **edit in place** (`adminUpdateQuestion`), hard-delete. *Reorder UI is still TODO.*
 - [x] Seed sample event + questions (`seedDemoEvent` mutation + admin **Create demo event** button in the UI; demo event slug `demo-event`).
-- [x] **Client-facing UI cleanup pass** — branding standardised on **EventPulse** with the tagline "Live quiz engagement and audience rankings for events." across header, footer, metadata, landing, and display. All visible references to internal stack names, function names, `MVP gate`, `TODO`, `Convex Auth`, `sessionStorage`, "hard delete", and local-development hints have been replaced with audience-friendly copy. The same notes are preserved in this doc, `technical.md`, and `README.md` for the team.
-- [ ] Visitor auth (deferred — display name only for v1).
+- [x] **Client-facing UI cleanup pass** - branding standardised on **EventPulse** with the tagline "Live quiz engagement and audience rankings for events." across header, footer, metadata, landing, and display. All visible references to internal stack names, function names, `MVP gate`, `TODO`, `Convex Auth`, `sessionStorage`, "hard delete", and local-development hints have been replaced with audience-friendly copy. The same notes are preserved in this doc, `technical.md`, and `README.md` for the team.
+- [ ] Visitor auth (deferred - display name only for v1).
 - [x] **MVP admin gate** in place (shared `ADMIN_ACCESS_CODE` on Convex; `/admin` unlock; `AdminGate` wrapper). Per-user role-based admin auth (Convex Auth) still deferred.
-- [x] **Cloudflare deployment ready** — Next.js static export (`output: "export"`) → Cloudflare Pages with `out/` as the build output directory. No adapter required for the current feature set.
+- [x] **Cloudflare deployment ready** - Next.js static export (`output: "export"`) → Cloudflare Pages with `out/` as the build output directory. No adapter required for the current feature set.
 
 ## Scaffolding (completed steps)
 
 - [x] **Next.js** App Router + **TypeScript** + Tailwind CSS v4.
-- [x] **Routes**: `/`, `/quiz`, `/results`, `/leaderboard`, `/display`, `/admin/questions` — visitor flow + admin/questions are functional; placeholders are gone.
+- [x] **Routes**: `/`, `/quiz`, `/results`, `/leaderboard`, `/display`, `/admin/questions` - visitor flow + admin/questions are functional; placeholders are gone.
 - [x] **Convex** project layout: `convex.json`, `convex/schema.ts`, `convex/events.ts`, `convex/questions.ts`, `convex/quizSessions.ts`, `convex/answers.ts`, `convex/seed.ts`.
 - [x] **Convex client** in React (`ConvexClientProvider`, `NEXT_PUBLIC_CONVEX_URL` + fallback for SSR/build).
 - [x] **Shared UI**: `SiteHeader`, `PageShell`, `LoadingPlaceholder`, `ErrorPlaceholder`, `LeaderboardPanel` (event-aware).
 - [x] **README** + **`.env.example`** with local setup and deployment targets.
 - [x] **Client API**: auto-generated by `npx convex dev` in `convex/_generated/`. Front-end imports `api` and `Id<TableName>` from there.
 - [x] **Event-scoped schema**: `events` table added; `questions`, `quizSessions`, `answers` updated with `eventId` and per-event indexes.
-- [x] **Visitor flow** — landing → quiz → results, with `submitAnswer` persistence, `completeQuizSession` scoring (rating bands: Champion/Excellent/Good/Try Again), session resume, and duplicate-attempt handling.
+- [x] **Visitor flow** - landing → quiz → results, with `submitAnswer` persistence, `completeQuizSession` scoring (rating bands: Champion/Excellent/Good/Try Again), session resume, and duplicate-attempt handling.
 
 ## Routes
 
 | Path | Role |
 |------|------|
-| `/` | Landing — loads active demo event by slug, shows event title + "How it works" instructions, captures display name (validated), calls `createQuizSession`, routes to `/quiz` or `/results`. |
+| `/` | Landing - loads active demo event by slug, shows event title + "How it works" instructions, captures display name (validated), calls `createQuizSession`, routes to `/quiz` or `/results`. |
 | `/quiz` | Per-question flow (one question at a time, progress bar + percent, score hidden, no backtracking, resume-aware). Direct hits without `event` + `sessionId` show a polished `RouteError` with a **Start from home** CTA. |
 | `/results` | Celebratory result card (score, percentage, rating, time taken, rank within event when computable) + leaderboard / projection / home CTAs. Direct hits without `sessionId` show a polished `RouteError`. |
 | `/leaderboard` | Per-event live ranking (resolves `demo-event` → eventId). Top-3 medals, rank chips, percentage + rating per row. |
-| `/display` | External projection screen for the demo event's leaderboard — site chrome hidden, top 10 only, oversized typography, high contrast, "Exit projection" link. |
-| `/admin` | Admin entry point — unlock form when locked (verifies `ADMIN_ACCESS_CODE` server-side), or admin sub-nav (Questions, Analytics) + Lock-admin button when unlocked. |
-| `/admin/questions` | Question management (gated) — event picker, list (active only), create form, **inline edit per row** (Save / Cancel), hard delete, **Create demo event** button (UI label; backed by `seed.seedDemoEvent`), **Reset responses** danger-zone. Only one row can be in edit mode at a time; other rows' Edit/Delete buttons are disabled while editing. |
-| `/admin/analytics` | Per-event analytics (gated) — totals (completed, in-progress, average score / percentage, highest score, fastest top-scorer time, active questions) + per-question correctness bars + **Reset responses** danger-zone. |
+| `/display` | External projection screen for the demo event's leaderboard - site chrome hidden, top 10 only, oversized typography, high contrast, "Exit projection" link. |
+| `/admin` | Admin entry point - unlock form when locked (verifies `ADMIN_ACCESS_CODE` server-side), or admin sub-nav (Questions, Analytics) + Lock-admin button when unlocked. |
+| `/admin/questions` | Question management (gated) - event picker, list (active only), create form, **inline edit per row** (Save / Cancel), hard delete, **Create demo event** button (UI label; backed by `seed.seedDemoEvent`), **Reset responses** danger-zone. Only one row can be in edit mode at a time; other rows' Edit/Delete buttons are disabled while editing. |
+| `/admin/analytics` | Per-event analytics (gated) - totals (completed, in-progress, average score / percentage, highest score, fastest top-scorer time, active questions) + per-question correctness bars + **Reset responses** danger-zone. |
 
 ## Deployment Targets
 
@@ -122,9 +122,9 @@ Run through this **in order** for a fresh production launch (or any time you cha
 
 ### 1. Convex (backend)
 
-- [ ] `npx convex deploy` — pushes schema + functions to the production Convex deployment. Note the printed HTTPS URL.
-- [ ] `npx convex env set ADMIN_ACCESS_CODE <prod-code> --prod` — sets the prod admin secret. Use a value distinct from dev.
-- [ ] (Optional) `npx convex env list --prod` — sanity check.
+- [ ] `npx convex deploy` - pushes schema + functions to the production Convex deployment. Note the printed HTTPS URL.
+- [ ] `npx convex env set ADMIN_ACCESS_CODE <prod-code> --prod` - sets the prod admin secret. Use a value distinct from dev.
+- [ ] (Optional) `npx convex env list --prod` - sanity check.
 - [ ] Verify in the Convex dashboard that the latest functions are listed.
 
 ### 2. Cloudflare Pages (frontend)
@@ -155,7 +155,7 @@ Run through this **in order** for a fresh production launch (or any time you cha
 |-------|----------|---------|
 | Cloudflare Pages (Production + Preview) | `NEXT_PUBLIC_CONVEX_URL` | Production Convex HTTPS URL. Inlined at build time. |
 | Cloudflare Pages | `NODE_VERSION` | `20`, so Next.js 16 builds successfully. |
-| Convex prod deployment | `ADMIN_ACCESS_CODE` | Shared admin secret. **Server-side only — never expose to the client.** |
+| Convex prod deployment | `ADMIN_ACCESS_CODE` | Shared admin secret. **Server-side only - never expose to the client.** |
 
 ## Non-Goals (Initial Scope)
 
@@ -186,16 +186,16 @@ Run through this **in order** for a fresh production launch (or any time you cha
 
 ### Visitor identity (temporary)
 
-Two visitors who type the **same name** on the **same event** collide and share an attempt — fine for the demo, **not** for a real competition. Replace with Convex Auth before public deployment.
+Two visitors who type the **same name** on the **same event** collide and share an attempt - fine for the demo, **not** for a real competition. Replace with Convex Auth before public deployment.
 
 ## Open TODOs (next steps)
 
-- **Question reorder** UI + drag/drop (or simple up/down) — would call `adminUpdateQuestion({ order })` for the swapped rows.
+- **Question reorder** UI + drag/drop (or simple up/down) - would call `adminUpdateQuestion({ order })` for the swapped rows.
 - **Soft archive on delete**: replace hard delete with `isActive=false` so historical answers/sessions survive.
 - **Admin "list all questions" query** so inactive questions show in the admin list (currently `listActiveQuestions` filters them out).
 - **Events admin UI** for full event CRUD (today only seeding creates events).
-- **Visitor auth** — still deferred; replace `${eventId}:${slug(name)}` collision-prone identifier.
-- **Per-user admin auth** — replace the MVP shared-code gate with Convex Auth + role checks (multi-admin, revocable, audited).
+- **Visitor auth** - still deferred; replace `${eventId}:${slug(name)}` collision-prone identifier.
+- **Per-user admin auth** - replace the MVP shared-code gate with Convex Auth + role checks (multi-admin, revocable, audited).
 - **Cross-event analytics** (the dashboard is per-event today).
 - **Daily completion trend chart** (placeholder card on `/admin/analytics`).
 - **`@opennextjs/cloudflare` migration**, *only if* we add server actions / route handlers / ISR / dynamic SSR. Static export covers the current feature set.
@@ -205,9 +205,9 @@ Two visitors who type the **same name** on the **same event** collide and share 
 - **No anti-cheat / rate limiting** on `submitAnswer` or `createQuizSession`. The same machine can spam visitor names to get multiple attempts.
 - **MVP admin gate, not real auth**: `/admin/questions`, `/admin/analytics`, and every protected Convex mutation/query are gated by a single shared `ADMIN_ACCESS_CODE`. The code lives in Convex env vars (server-side); the UI caches it in `sessionStorage` after a one-time unlock at `/admin`. There are no per-user accounts, role separation, or audit trail. Replace with Convex Auth + role checks before public deployment.
 - `getLeaderboard.eventId` remains optional for back-compat; will be required once an event picker reaches the leaderboard page.
-- `listActiveQuestions` is the only question listing query — admin can't see inactive questions yet.
+- `listActiveQuestions` is the only question listing query - admin can't see inactive questions yet.
 - Analytics aggregates are computed in-memory per request (small-event safe). Larger events should switch to denormalised counters or scheduled aggregations.
-- `/display` cannot be used multi-tenant yet — it always loads the `demo-event` slug. Multi-event routing for the projection view is a later milestone.
+- `/display` cannot be used multi-tenant yet - it always loads the `demo-event` slug. Multi-event routing for the projection view is a later milestone.
 
 ## Related Documents
 

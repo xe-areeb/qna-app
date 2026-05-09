@@ -6,14 +6,14 @@ EventPulse is a public, **event-based** quiz leaderboard app: visitors enter a d
 
 ## Current assumptions (pending client confirmation)
 
-The build is unblocked under these working assumptions — see [`project.md`](./project.md) for the full list and the open client questions.
+The build is unblocked under these working assumptions - see [`project.md`](./project.md) for the full list and the open client questions.
 
 - The app supports **multiple events**; each has its own questions and leaderboard.
 - Visitors **do not sign up**; they enter a display name and the client persists a stable `visitorIdentifier`.
 - **One response per visitor per event.**
 - **Per-event analytics first**; cross-event aggregates can be layered later.
 - Branding is **global** for now; per-event branding deferred.
-- Admin tools are gated by an **MVP shared-secret** (`ADMIN_ACCESS_CODE` on the Convex deployment) — see "Admin gate (MVP)" below. Replace with Convex Auth + role check before deployment.
+- Admin tools are gated by an **MVP shared-secret** (`ADMIN_ACCESS_CODE` on the Convex deployment) - see "Admin gate (MVP)" below. Replace with Convex Auth + role check before deployment.
 
 ## Event-based model
 
@@ -30,7 +30,7 @@ The build is unblocked under these working assumptions — see [`project.md`](./
 
 - **Next.js 16** (App Router) + **TypeScript** + **Tailwind CSS**
 - **Convex** (database + server functions + real-time queries)
-- **Cloudflare Pages** — frontend hosting via Next.js **static export** (no adapter required; see "Deployment" below)
+- **Cloudflare Pages** - frontend hosting via Next.js **static export** (no adapter required; see "Deployment" below)
 
 ## Prerequisites
 
@@ -39,7 +39,7 @@ The build is unblocked under these working assumptions — see [`project.md`](./
 
 ## Local setup
 
-> **Quick checklist** — `npm install` → `npm run convex:dev` → copy URL into `.env.local` → `npm run dev`.
+> **Quick checklist** - `npm install` → `npm run convex:dev` → copy URL into `.env.local` → `npm run dev`.
 
 1. Clone the repo and install dependencies:
 
@@ -47,7 +47,7 @@ The build is unblocked under these working assumptions — see [`project.md`](./
    npm install
    ```
 
-2. **Convex** — create/link a dev deployment (requires a [Convex](https://www.convex.dev/) account on first run):
+2. **Convex** - create/link a dev deployment (requires a [Convex](https://www.convex.dev/) account on first run):
 
    ```bash
    npm run convex:dev
@@ -73,7 +73,7 @@ The build is unblocked under these working assumptions — see [`project.md`](./
 
 ### Convenience
 
-- **Convex only**: `npm run convex:dev` — watches Convex functions and regenerates types when codegen is enabled.
+- **Convex only**: `npm run convex:dev` - watches Convex functions and regenerates types when codegen is enabled.
 - **Codegen once** (requires `CONVEX_DEPLOYMENT` / configured project): `npm run convex:codegen`
 
 ## Environment variables
@@ -82,7 +82,7 @@ The build is unblocked under these working assumptions — see [`project.md`](./
 |----------|----------------|----------|-------------|
 | `NEXT_PUBLIC_CONVEX_URL` | `.env.local` (Next.js) | **Yes** for real data | Convex deployment URL from `npx convex dev` / Convex dashboard. Without it, the app uses a build-time placeholder URL and **skips** live queries (banner shown). |
 | `CONVEX_DEPLOYMENT` | `.env.local` (Next.js) | For CLI / codegen | Set automatically when Convex CLI configures the project (see `.env.local` after `convex dev`). |
-| `ADMIN_ACCESS_CODE` | **Convex deployment env vars** (set with `npx convex env set`) | **Yes** if you want to use the admin pages | Shared secret for the MVP admin gate. Read by `process.env.ADMIN_ACCESS_CODE` inside Convex functions. **Do not** prefix with `NEXT_PUBLIC_` — the value must stay server-side. See "Admin gate (MVP)" below. |
+| `ADMIN_ACCESS_CODE` | **Convex deployment env vars** (set with `npx convex env set`) | **Yes** if you want to use the admin pages | Shared secret for the MVP admin gate. Read by `process.env.ADMIN_ACCESS_CODE` inside Convex functions. **Do not** prefix with `NEXT_PUBLIC_` - the value must stay server-side. See "Admin gate (MVP)" below. |
 
 **Convex Auth** (future milestone) will replace the shared-code gate with proper per-user auth.
 
@@ -115,7 +115,7 @@ The admin pages (`/admin/questions`, `/admin/analytics`) and every dangerous Con
 
 - It does **not** authenticate individual users. Every "admin" shares one code.
 - It does **not** rate-limit guesses, lock out brute-force attempts, or write an audit trail.
-- It does **not** protect public visitor endpoints — `submitAnswer`, `getLeaderboard`, `getQuizResult`, etc. stay anonymous so the quiz is playable without admin.
+- It does **not** protect public visitor endpoints - `submitAnswer`, `getLeaderboard`, `getQuizResult`, etc. stay anonymous so the quiz is playable without admin.
 - It does **not** persist the code beyond the current browser tab.
 
 Treat it as a "safe enough for a client demo" hatch and replace with Convex Auth + role checks before public deployment.
@@ -127,17 +127,17 @@ The app deploys as **two independent pieces**:
 | Piece | Hosted on | Build command | Notes |
 |------|-----------|---------------|-------|
 | Convex backend (schema + functions) | Convex managed cloud | `npx convex deploy` | Stores `ADMIN_ACCESS_CODE` and serves all queries/mutations. |
-| Next.js frontend (static export) | Cloudflare Pages | `npm run build` → `out/` | Pure static — no adapter, no Workers needed. |
+| Next.js frontend (static export) | Cloudflare Pages | `npm run build` → `out/` | Pure static - no adapter, no Workers needed. |
 
 ### Why static export to Cloudflare Pages?
 
-Every route in this app prerenders to static HTML (verified by `npm run build` — every route prints as `○ (Static)`). All data fetching happens client-side via the Convex React client. There are **no** server actions, route handlers, server-only fetches, or dynamic route params. That makes Cloudflare Pages with Next.js' built-in static export the simplest and most stable target — no `@opennextjs/cloudflare` / `next-on-pages` adapter required.
+Every route in this app prerenders to static HTML (verified by `npm run build` - every route prints as `○ (Static)`). All data fetching happens client-side via the Convex React client. There are **no** server actions, route handlers, server-only fetches, or dynamic route params. That makes Cloudflare Pages with Next.js' built-in static export the simplest and most stable target - no `@opennextjs/cloudflare` / `next-on-pages` adapter required.
 
 `next.config.ts` is set to `output: "export"` and `images.unoptimized: true`. Running `npm run build` produces `out/`, which is what Cloudflare Pages serves.
 
 > If we ever introduce server actions, route handlers, ISR, or dynamic SSR, switch to `@opennextjs/cloudflare` and update this guide.
 
-### Step 1 — Deploy Convex (backend)
+### Step 1 - Deploy Convex (backend)
 
 From your local machine, with this repo checked out:
 
@@ -150,9 +150,9 @@ npx convex deploy
 npx convex env set ADMIN_ACCESS_CODE <your-prod-code> --prod
 ```
 
-`npx convex deploy` pushes `convex/schema.ts` + every function in `convex/`. It prints the **production HTTP URL** (e.g. `https://your-app.convex.cloud`) — copy this; you'll paste it into Cloudflare Pages in the next step.
+`npx convex deploy` pushes `convex/schema.ts` + every function in `convex/`. It prints the **production HTTP URL** (e.g. `https://your-app.convex.cloud`) - copy this; you'll paste it into Cloudflare Pages in the next step.
 
-### Step 2 — Deploy the frontend to Cloudflare Pages
+### Step 2 - Deploy the frontend to Cloudflare Pages
 
 You can use either the Cloudflare dashboard (recommended) or `wrangler` CLI.
 
@@ -202,9 +202,9 @@ Then set the env var in the dashboard (Pages → your project → Settings → E
 | **Cloudflare Pages** | `NODE_VERSION` | `20` |
 | **Convex prod deployment** | `ADMIN_ACCESS_CODE` | The shared admin secret. Set with `npx convex env set ADMIN_ACCESS_CODE <code> --prod`. **Server-side only.** |
 
-> `ADMIN_ACCESS_CODE` is **not** set in Cloudflare. The frontend never reads it directly — Convex functions read it via `process.env.ADMIN_ACCESS_CODE` and the client only ever holds the value the visitor types into `/admin`.
+> `ADMIN_ACCESS_CODE` is **not** set in Cloudflare. The frontend never reads it directly - Convex functions read it via `process.env.ADMIN_ACCESS_CODE` and the client only ever holds the value the visitor types into `/admin`.
 
-### Step 3 — Test the production deployment
+### Step 3 - Test the production deployment
 
 After Cloudflare reports a successful deploy:
 
@@ -220,7 +220,7 @@ After Cloudflare reports a successful deploy:
    - Click **Reset responses** in either admin page → confirm → the leaderboard / `/display` go back to empty.
    - Click **Lock admin** on `/admin`; revisiting `/admin/questions` should show the access-required card.
 3. **Verify wrong codes fail**: enter a wrong admin code → server should reject with "Invalid admin access code".
-4. **Verify no leakage**: open browser devtools → Network tab → confirm `ADMIN_ACCESS_CODE` is **not** in any HTML / JS payload (only the value the user types is sent — and only as a Convex mutation arg).
+4. **Verify no leakage**: open browser devtools → Network tab → confirm `ADMIN_ACCESS_CODE` is **not** in any HTML / JS payload (only the value the user types is sent - and only as a Convex mutation arg).
 
 ### Rotating the admin code
 
@@ -241,9 +241,9 @@ npm run preview     # serves out/ on http://localhost:4173 via npx serve
 
 ## Demo safety
 
-- The admin gate is **MVP-only** (one shared `ADMIN_ACCESS_CODE`). Do **not** use this app in its current form for a real, public, multi-admin production deployment — replace with Convex Auth + role checks first.
+- The admin gate is **MVP-only** (one shared `ADMIN_ACCESS_CODE`). Do **not** use this app in its current form for a real, public, multi-admin production deployment - replace with Convex Auth + role checks first.
 - **Do not commit the admin code** to git, screenshots, support channels, or the Cloudflare repo metadata.
-- **Do not paste the admin code into screen recordings or shared client demos** — anyone who sees it has full admin access until you rotate.
+- **Do not paste the admin code into screen recordings or shared client demos** - anyone who sees it has full admin access until you rotate.
 - The Convex `ADMIN_ACCESS_CODE` env var is server-side only; treat it like a database password.
 
 ## Project layout (high level)
@@ -254,7 +254,7 @@ npm run preview     # serves out/ on http://localhost:4173 via npx serve
 | `components/` | Shared UI (layout chrome, Convex provider, leaderboard panel, route error card, admin gate, placeholders) |
 | `lib/` | Client-side utilities (e.g. `useAdminUnlock` sessionStorage hook) |
 | `convex/` | Schema + Convex functions (`events`, `questions`, `quizSessions`, `answers`, `analytics`, `seed`, `adminAuth`) |
-| `convex/_generated/` | Auto-generated by `npx convex dev` — typed `api`, `Id<TableName>`, etc. Do not edit by hand. |
+| `convex/_generated/` | Auto-generated by `npx convex dev` - typed `api`, `Id<TableName>`, etc. Do not edit by hand. |
 
 ## Current implementation status
 
@@ -266,10 +266,10 @@ npm run preview     # serves out/ on http://localhost:4173 via npx serve
 | Admin /questions page | Event picker, list (active only), create form, **inline edit per row** (Save / Cancel), hard delete, **Create demo event** button, **Reset responses** danger-zone. Wrapped in `AdminGate`. Reorder UI still TODO. |
 | Admin /analytics page | Event picker, top-line stat cards (completed, in-progress, average score / percentage, highest score, fastest top-scorer time, active questions), per-question correctness bars, **Reset responses** danger-zone. Wrapped in `AdminGate`. Daily-trend chart is a clearly marked placeholder. |
 | Seed data | `seed.seedDemoEvent` creates the `demo-event` event (title `EventPulse Demo`, `status: active`) and 15 sample questions; idempotent. On reuse, also patches `title` / `description` back to the constants in `convex/seed.ts` if they have drifted. Admin-gated. |
-| Visitor flow | **Working & polished** — landing (instructions + validation) → quiz (large tap targets, percent progress, "Saving…" / "Completing quiz…" states) → results (rating-tinted card, formatted time, rank within event). |
+| Visitor flow | **Working & polished** - landing (instructions + validation) → quiz (large tap targets, percent progress, "Saving…" / "Completing quiz…" states) → results (rating-tinted card, formatted time, rank within event). |
 | Direct route errors | `/quiz` and `/results` opened without their URL params show a polished `RouteError` card with a **Start from home** CTA. |
-| Visitor auth | **Deferred** — display name + client `visitorIdentifier` (`${eventId}:${slug(name)}`). Same name + same event = shared attempt. |
-| Admin auth | **MVP shared-code gate** — `ADMIN_ACCESS_CODE` env var on Convex, unlocked once at `/admin` per browser tab. Replace with Convex Auth + role check before deployment. |
+| Visitor auth | **Deferred** - display name + client `visitorIdentifier` (`${eventId}:${slug(name)}`). Same name + same event = shared attempt. |
+| Admin auth | **MVP shared-code gate** - `ADMIN_ACCESS_CODE` env var on Convex, unlocked once at `/admin` per browser tab. Replace with Convex Auth + role check before deployment. |
 
 See **`project.md`** and **`technical.md`** for the full product spec and technical contract.
 
@@ -289,7 +289,7 @@ Once the demo event is seeded, you can play through the full loop:
 
 1. **Landing `/`** loads the demo event by slug, shows a **How it works** card (question count, scoring visibility, one-attempt-per-name rule, no backtracking), and asks for a display name.
    - The display name input enforces a 2-character minimum and rejects names that are pure punctuation. The **Start quiz** button stays disabled while the input is invalid or while a request is in flight.
-   - The same name + same event reuses the previous attempt — resume in-progress, or jump straight to results if completed.
+   - The same name + same event reuses the previous attempt - resume in-progress, or jump straight to results if completed.
 2. **`/quiz?event=demo-event&sessionId=…`** shows one question at a time with a `Question N of M` progress bar (and percent-complete readout). Picking an option flips a clear emerald ring; the submit button cycles **Next question → Saving… → Submit final answer → Completing quiz…** to block double-submits. Score is **not** revealed mid-quiz; backtracking is disabled.
 3. After the final answer, `completeQuizSession` runs and you're redirected to **`/results?sessionId=…`** with score, percentage, **rating** (Champion / Excellent / Good / Try Again), `Mm Ss`-formatted time, and a rank chip (e.g. `#3 of 12`) when the event already has completed runs. Buttons link to **View leaderboard**, **Open projection screen** (new tab), and **Back to home**.
 4. **`/leaderboard`** and **`/display`** show real-time rankings for the demo event. The leaderboard adds rank chips, top-3 medals, and per-row percentage + rating; the display screen hides the site chrome, jumps to oversized typography, shows the top **10**, and includes a small **Exit projection** link.
@@ -307,7 +307,7 @@ Once the demo event is seeded, you can play through the full loop:
 - Per-question correctness bars (`% correct` of all answers recorded for that question).
 - A daily completion trend card is currently a clearly marked placeholder (see [`technical.md`](./technical.md)).
 
-Both analytics queries are admin-gated (require the `adminCode` arg). The page itself is wrapped in `AdminGate` and only renders once the visitor has unlocked at `/admin`. Same shared-secret caveat as the rest of the admin surface — replace with Convex Auth + role check before public exposure.
+Both analytics queries are admin-gated (require the `adminCode` arg). The page itself is wrapped in `AdminGate` and only renders once the visitor has unlocked at `/admin`. Same shared-secret caveat as the rest of the admin surface - replace with Convex Auth + role check before public exposure.
 
 ### Reset demo responses (admin)
 
@@ -320,7 +320,7 @@ Both `/admin/analytics` and `/admin/questions` include a destructive red **Dange
 
 If the demo event hasn't been seeded yet, the call is a graceful no-op (it returns `{ deletedSessions: 0, deletedAnswers: 0, eventFound: false }` and shows a friendly inline message).
 
-> The mutation is admin-gated (requires the unlocked `adminCode`), but the gate is the MVP shared secret — not real auth. Replace with Convex Auth + role checks before public deployment.
+> The mutation is admin-gated (requires the unlocked `adminCode`), but the gate is the MVP shared secret - not real auth. Replace with Convex Auth + role checks before public deployment.
 
 ### Rating bands
 
@@ -333,24 +333,24 @@ If the demo event hasn't been seeded yet, the call is a graceful no-op (it retur
 
 ### Visitor identifier (temporary)
 
-`visitorIdentifier = ${eventId}:${slug(displayName)}` — the same name + same event collide. **OK for demo, not for a public competition.** Replace with Convex Auth before deploying.
+`visitorIdentifier = ${eventId}:${slug(displayName)}` - the same name + same event collide. **OK for demo, not for a public competition.** Replace with Convex Auth before deploying.
 
 ## Remaining limitations (demo build)
 
-- **Admin gate is MVP shared-secret only** — `ADMIN_ACCESS_CODE` is one value shared by every admin. No per-user accounts, no role separation, no rate limiting, no audit. Replace with Convex Auth + role check before deployment.
-- **Visitor identity is advisory** — `visitorIdentifier = ${eventId}:${slug(displayName)}`. Same name + same event collide. OK for demos, **not** public competitions.
+- **Admin gate is MVP shared-secret only** - `ADMIN_ACCESS_CODE` is one value shared by every admin. No per-user accounts, no role separation, no rate limiting, no audit. Replace with Convex Auth + role check before deployment.
+- **Visitor identity is advisory** - `visitorIdentifier = ${eventId}:${slug(displayName)}`. Same name + same event collide. OK for demos, **not** public competitions.
 - **No anti-cheat / rate limiting** on `submitAnswer` or `createQuizSession`.
-- **Multi-event routing not wired yet** — `/`, `/leaderboard`, and `/display` always resolve the slug `demo-event`. Per-event URLs (`/event/[slug]/…`) are a future milestone.
-- **Analytics aggregates run in-memory** per request — fine for demo volumes; should switch to denormalised counters or scheduled aggregations for larger events.
+- **Multi-event routing not wired yet** - `/`, `/leaderboard`, and `/display` always resolve the slug `demo-event`. Per-event URLs (`/event/[slug]/…`) are a future milestone.
+- **Analytics aggregates run in-memory** per request - fine for demo volumes; should switch to denormalised counters or scheduled aggregations for larger events.
 - **Cloudflare deploy uses static export.** The current setup works because every route prerenders. If we add server actions, route handlers, ISR, or dynamic SSR, switch to `@opennextjs/cloudflare`.
 
 ## Next required steps
 
-1. `npm run convex:dev` (already wired) — keep this terminal running.
+1. `npm run convex:dev` (already wired) - keep this terminal running.
 2. **Set the admin code** with `npx convex env set ADMIN_ACCESS_CODE <your-code>` (once per Convex deployment).
-3. `npm run dev` — start the Next.js dev server in a second terminal.
+3. `npm run dev` - start the Next.js dev server in a second terminal.
 4. Visit `/admin`, unlock with the code you set, then open `/admin/questions` and click **Seed demo event** if you haven't already.
-5. Add admin **reorder** UI for questions (drag/drop or up/down — would call `adminUpdateQuestion({ order })` for the swapped rows). Edit-in-place is already shipped.
+5. Add admin **reorder** UI for questions (drag/drop or up/down - would call `adminUpdateQuestion({ order })` for the swapped rows). Edit-in-place is already shipped.
    - The visible UI was scrubbed of internal/developer notes (function names, "MVP gate", "TODO", `sessionStorage`, "Convex Auth", "Seed demo event" → "Create demo event", "Reset demo responses" → "Reset responses", etc.). The same notes still live in this README, `project.md`, and `technical.md` for the team.
 6. Switch `adminDeleteQuestion` callers to a **soft archive** (flip `isActive`) before any production exposure.
 7. Make `getLeaderboard.eventId` required once an event picker reaches `/leaderboard`.

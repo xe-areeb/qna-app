@@ -3,7 +3,7 @@ import { ConvexError, v } from "convex/values";
 import { assertAdmin } from "./adminAuth";
 
 /**
- * Event management — basic stubs.
+ * Event management - basic stubs.
  *
  * Admin mutations are gated by the MVP `adminCode` shared secret (see
  * `convex/adminAuth.ts`). They still need a follow-up pass to use Convex
@@ -36,7 +36,7 @@ export const listEvents = queryGeneric({
 });
 
 /**
- * Look up an active event by slug — used by visitor-facing routes.
+ * Look up an active event by slug - used by visitor-facing routes.
  */
 export const getActiveEventBySlug = queryGeneric({
   args: { slug: v.string() },

@@ -12,7 +12,7 @@ import { LoadingPlaceholder } from "@/components/loading-placeholder";
  * (e.g. `42.3s`).
  */
 function formatTime(ms: number | null | undefined): string {
-  if (ms == null || ms < 0) return "—";
+  if (ms == null || ms < 0) return "-";
   if (ms < 60_000) return `${(ms / 1000).toFixed(1)}s`;
   const totalSeconds = Math.floor(ms / 1000);
   const minutes = Math.floor(totalSeconds / 60);
@@ -138,7 +138,7 @@ function CompactList({ rows }: { rows: LeaderboardRow[] }) {
                   {row.visitorName ?? "Anonymous"}
                 </p>
                 <p className="text-xs text-zinc-500">
-                  {row.percentage != null ? `${row.percentage}%` : "—"}
+                  {row.percentage != null ? `${row.percentage}%` : "-"}
                   {row.rating ? ` · ${row.rating}` : ""}
                 </p>
               </div>
@@ -195,7 +195,7 @@ function ProjectionList({ rows }: { rows: LeaderboardRow[] }) {
                   {row.visitorName ?? "Anonymous"}
                 </p>
                 <p className="mt-1 text-base text-zinc-400 md:text-xl">
-                  {row.percentage != null ? `${row.percentage}%` : "—"}
+                  {row.percentage != null ? `${row.percentage}%` : "-"}
                   {row.rating ? ` · ${row.rating}` : ""}
                   {" · "}
                   {formatTime(row.timeTaken)}

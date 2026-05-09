@@ -30,7 +30,7 @@ export default function ResultsPage() {
  * for sub-minute runs (e.g. `42.3s`).
  */
 function formatTime(ms: number | undefined): string {
-  if (ms == null || ms < 0) return "—";
+  if (ms == null || ms < 0) return "-";
   if (ms < 60_000) {
     return `${(ms / 1000).toFixed(1)}s`;
   }
@@ -113,7 +113,7 @@ function ResultsInner() {
       <div className="px-4 py-16">
         <RouteError
           title="Session not found"
-          description="We couldn’t find this quiz session — it may have been deleted."
+          description="We couldn’t find this quiz session - it may have been deleted."
           primaryHref="/"
           primaryLabel="Start from home"
         />
@@ -137,7 +137,7 @@ function ResultsInner() {
   const score = result.score ?? 0;
   const total = result.totalQuestions ?? 0;
   const percentage = result.percentage ?? 0;
-  const rating = result.rating ?? "—";
+  const rating = result.rating ?? "-";
   const time = formatTime(result.timeTaken);
   const rankText =
     rank && rank !== null ? rankCopy(rank.rank, rank.total) : null;

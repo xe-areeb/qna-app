@@ -10,7 +10,7 @@ import { LoadingPlaceholder } from "@/components/loading-placeholder";
 import { useAdminUnlock } from "@/lib/use-admin-unlock";
 
 /**
- * `/admin` — the entry point for the demo admin gate.
+ * `/admin` - the entry point for the demo admin gate.
  *
  * Locked → shows a single-input unlock form. Submission calls the
  * `verifyAdminCode` Convex mutation (which throws on a bad / unset code) and

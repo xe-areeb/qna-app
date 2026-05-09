@@ -6,7 +6,7 @@ import { ConvexEnvBanner } from "@/components/convex-env-banner";
 import { SiteHeader } from "@/components/site-header";
 
 /**
- * Wraps app content with the global header / footer / Convex env banner —
+ * Wraps app content with the global header / footer / Convex env banner -
  * **except** on routes meant for external projection (currently `/display`),
  * where the chrome is hidden so the page can use the full viewport at a high
  * contrast.

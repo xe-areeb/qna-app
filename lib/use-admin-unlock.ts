@@ -30,7 +30,7 @@ type Snapshot = { hydrated: boolean; code: string | null };
 
 const SERVER_SNAPSHOT: Snapshot = { hydrated: false, code: null };
 
-// Stable cached client snapshot — `useSyncExternalStore` requires the
+// Stable cached client snapshot - `useSyncExternalStore` requires the
 // snapshot reference to stay equal between renders if the underlying value
 // hasn't changed (otherwise React believes it changed and re-renders forever).
 let clientSnapshot: Snapshot = { hydrated: true, code: null };
@@ -53,7 +53,7 @@ const localSubscribers = new Set<() => void>();
 
 function subscribe(callback: () => void): () => void {
   localSubscribers.add(callback);
-  // `storage` only fires for OTHER tabs — combine with the local bus below
+  // `storage` only fires for OTHER tabs - combine with the local bus below
   // so writes inside this tab also trigger re-reads.
   const onStorage = (event: StorageEvent) => {
     if (event.key === STORAGE_KEY || event.key == null) callback();
@@ -97,7 +97,7 @@ export function useAdminUnlock(): AdminUnlockState {
     try {
       window.sessionStorage.setItem(STORAGE_KEY, next);
     } catch {
-      // ignore — keep in-memory only.
+      // ignore - keep in-memory only.
     }
     notifyLocal();
   }, []);

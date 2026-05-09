@@ -1,6 +1,6 @@
 /**
  * Soft banner shown only when the live data backend URL has not been
- * configured for this build. The wording is intentionally non-technical —
+ * configured for this build. The wording is intentionally non-technical -
  * configuration details for operators live in the project docs, not in the
  * UI.
  */

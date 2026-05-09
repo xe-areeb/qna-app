@@ -7,7 +7,7 @@ import { assertAdmin } from "./adminAuth";
  *
  * `seedDemoEvent` is **idempotent**:
  *   - If an event with slug `demo-event` exists, it is reused (not duplicated).
- *   - Questions are upserted by `(eventId, order)` — existing orders are skipped.
+ *   - Questions are upserted by `(eventId, order)` - existing orders are skipped.
  *
  * TODO(auth): seeding is open right now. Lock down before any deployment that
  * exposes this mutation. TODO: switch question delete to a soft archive once
@@ -126,7 +126,7 @@ const DEMO_QUESTIONS: DemoQuestion[] = [
  *   - all `questions` for that event (active and inactive)
  *
  * Returns `{ deletedSessions, deletedAnswers, eventFound }`. `eventFound` is
- * `false` when the demo event hasn't been seeded yet — both counters are `0`
+ * `false` when the demo event hasn't been seeded yet - both counters are `0`
  * in that case (the call is a graceful no-op rather than an error).
  *
  * TODO(auth): public today like the rest of the admin surface. Lock down

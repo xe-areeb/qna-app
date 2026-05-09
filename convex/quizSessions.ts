@@ -3,7 +3,7 @@ import { ConvexError, v } from "convex/values";
 
 /**
  * Quiz sessions are scoped to an event. One visitor (identified today by
- * `visitorIdentifier` — a deterministic string the client builds from
+ * `visitorIdentifier` - a deterministic string the client builds from
  * `eventId + normalized name`) may complete only one session per event.
  */
 
@@ -65,7 +65,7 @@ export const createQuizSession = mutationGeneric({
 
 /**
  * Finalize a session: tally correct answers, derive percentage / rating,
- * stamp `completedAt` and `timeTaken`. Idempotent — calling on an already
+ * stamp `completedAt` and `timeTaken`. Idempotent - calling on an already
  * completed session returns its stored values without modification.
  */
 export const completeQuizSession = mutationGeneric({
@@ -197,7 +197,7 @@ export const getQuizResult = queryGeneric({
 
 /**
  * Number of answers already submitted for a session. Drives quiz progress and
- * resumption — the next question to show is the one at `answeredCount` in the
+ * resumption - the next question to show is the one at `answeredCount` in the
  * ordered active question list.
  */
 export const getSessionAnsweredCount = queryGeneric({

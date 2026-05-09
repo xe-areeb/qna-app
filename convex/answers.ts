@@ -12,7 +12,7 @@ import { ConvexError, v } from "convex/values";
  *   - the same (sessionId, questionId) has not already been answered
  *
  * NOTE: `isCorrect` is computed server-side and stored, but the **frontend
- * must not display correctness mid-quiz** — the result is only revealed on
+ * must not display correctness mid-quiz** - the result is only revealed on
  * the results page after `completeQuizSession`.
  */
 export const submitAnswer = mutationGeneric({
@@ -32,7 +32,7 @@ export const submitAnswer = mutationGeneric({
     }
     if (session.status !== "in_progress") {
       throw new ConvexError(
-        "This session is already completed — no further answers accepted.",
+        "This session is already completed - no further answers accepted.",
       );
     }
 

@@ -32,7 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
-# Keep the template — only contains placeholder hints, no real secrets.
+# Keep the template - only contains placeholder hints, no real secrets.
 !.env.example
 
 # vercel

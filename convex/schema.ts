@@ -2,7 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 /**
- * EventPulse schema — event-scoped quiz leaderboard.
+ * EventPulse schema - event-scoped quiz leaderboard.
  *
  * NOTE: Visitor and admin auth are deferred. Visitor identity is captured via
  * `visitorIdentifier` (e.g. a client-generated id) plus a chosen `visitorName`.
@@ -42,7 +42,7 @@ export default defineSchema({
   quizSessions: defineTable({
     eventId: v.id("events"),
     visitorName: v.string(),
-    /** Stable per-visitor identifier (e.g. localStorage uuid) — replaces auth id for now. */
+    /** Stable per-visitor identifier (e.g. localStorage uuid) - replaces auth id for now. */
     visitorIdentifier: v.string(),
     status: v.union(v.literal("in_progress"), v.literal("completed")),
     startedAt: v.number(),

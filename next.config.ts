@@ -11,7 +11,7 @@ import type { NextConfig } from "next";
  *     handlers, server-only data fetches, image optimization needs, or
  *     dynamic route params.
  *   - That means the Cloudflare adapter (`@opennextjs/cloudflare`) is not
- *     needed — a plain static export deployed to Cloudflare Pages is the
+ *     needed - a plain static export deployed to Cloudflare Pages is the
  *     simplest, most stable path.
  *
  * `images.unoptimized: true` is set defensively so any future `next/image`

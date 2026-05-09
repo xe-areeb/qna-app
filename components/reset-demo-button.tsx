@@ -10,7 +10,7 @@ import { ErrorPlaceholder } from "@/components/error-placeholder";
  *
  * Wraps `api.seed.resetDemoEventResponses` with a browser `confirm` dialog,
  * loading state, and result feedback. Only the admin gate renders this
- * component — it requires an `adminCode` from `useAdminUnlock` and forwards
+ * component - it requires an `adminCode` from `useAdminUnlock` and forwards
  * it to the protected mutation.
  *
  * **What it deletes**: every `quizSessions` row + every `answers` row scoped
@@ -18,7 +18,7 @@ import { ErrorPlaceholder } from "@/components/error-placeholder";
  * questions (active or inactive).
  *
  * After a successful reset, live queries (analytics, leaderboard, display)
- * refresh themselves — the panels show their empty state until a new visitor
+ * refresh themselves - the panels show their empty state until a new visitor
  * completes the quiz.
  */
 

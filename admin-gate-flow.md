@@ -1,4 +1,4 @@
-# Admin gate (MVP) — flow
+# Admin gate (MVP) - flow
 
 Snapshot of how the shared-code admin gate is wired between Convex and the
 Next.js client. See `README.md` → "Admin gate (MVP)" for setup and
@@ -40,10 +40,10 @@ Next.js client. See `README.md` → "Admin gate (MVP)" for setup and
 - Public visitor endpoints (`createQuizSession`, `submitAnswer`,
   `completeQuizSession`, `getQuizResult`, `getSessionRank`,
   `getLeaderboard`, `listActiveQuestions`, `getActiveEventBySlug`,
-  `listEvents`, `getSessionAnsweredCount`) are deliberately **not** gated —
+  `listEvents`, `getSessionAnsweredCount`) are deliberately **not** gated -
   the quiz must be playable without admin.
 - `ADMIN_ACCESS_CODE` lives only on the Convex deployment. The client
-  never sees it via `NEXT_PUBLIC_*` — it only ever holds the value the
+  never sees it via `NEXT_PUBLIC_*` - it only ever holds the value the
   user typed into `/admin`, cached per-tab in `sessionStorage`.
 - This is a single shared secret, not real auth. Replace with Convex
   Auth + role checks before public deployment.

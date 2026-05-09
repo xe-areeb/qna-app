@@ -81,7 +81,7 @@ function QuizPageInner() {
 
   // When the visitor lands on a session that already has all answers but is
   // still `in_progress` (e.g. they reloaded mid-finalize), kick off
-  // `completeQuizSession` once. We only flip a ref here — the render path
+  // `completeQuizSession` once. We only flip a ref here - the render path
   // already shows the "Completing your quiz…" card when `currentIndex >=
   // total`, so we don't need to update React state from inside the effect
   // (which would trip the `react-hooks/set-state-in-effect` rule).
@@ -277,7 +277,7 @@ function QuizPageInner() {
   return (
     <PageShell
       title={event.title}
-      description={`Hi ${result.visitorName} — answer one question at a time. Your score appears after the last one.`}
+      description={`Hi ${result.visitorName} - answer one question at a time. Your score appears after the last one.`}
     >
       <div className="space-y-6">
         <div className="space-y-2">
@@ -356,7 +356,7 @@ function QuizPageInner() {
 
         <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-zinc-500 sm:max-w-xs">
-            Backtracking is disabled — pick the answer you mean to commit to.
+            Backtracking is disabled - pick the answer you mean to commit to.
           </p>
           <button
             type="button"
