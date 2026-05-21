@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { ConvexEnvBanner } from "@/components/convex-env-banner";
+import { DemoAccessGate } from "@/components/demo-access-gate";
 import { SiteHeader } from "@/components/site-header";
 
 /**
@@ -28,19 +29,25 @@ export function SiteChrome({ children }: { children: ReactNode }) {
     pathname?.startsWith("/quiz/") === true;
 
   if (naked) {
-    return <main className="flex min-h-0 flex-1 flex-col">{children}</main>;
+    return (
+      <DemoAccessGate>
+        <main className="flex min-h-0 flex-1 flex-col">{children}</main>
+      </DemoAccessGate>
+    );
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <ConvexEnvBanner />
-      <SiteHeader />
-      <main className="flex min-h-0 flex-1 flex-col">{children}</main>
-      {!hideFooter ? (
-        <footer className="border-t border-zinc-200 py-4 text-center text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
+    <DemoAccessGate>
+      <div className="flex min-h-0 flex-1 flex-col">
+        <ConvexEnvBanner />
+        <SiteHeader />
+        <main className="flex min-h-0 flex-1 flex-col">{children}</main>
+        {!hideFooter ? (
+          <footer className="border-t border-zinc-200 py-4 text-center text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
           EventPulse · Live quiz engagement and audience rankings for events.
-        </footer>
-      ) : null}
-    </div>
+          </footer>
+        ) : null}
+      </div>
+    </DemoAccessGate>
   );
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LockDemoButton } from "@/components/lock-demo-button";
 
 const nav = [
   { href: "/", label: "Home" },
@@ -27,6 +28,7 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          <LockDemoButton />
         </nav>
       </div>
     </header>

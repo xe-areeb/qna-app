@@ -81,10 +81,22 @@ The build is unblocked under these working assumptions - see [`project.md`](./pr
 | Variable | Where it lives | Required | Description |
 |----------|----------------|----------|-------------|
 | `NEXT_PUBLIC_CONVEX_URL` | `.env.local` (Next.js) | **Yes** for real data | Convex deployment URL from `npx convex dev` / Convex dashboard. Without it, the app uses a build-time placeholder URL and **skips** live queries (banner shown). |
+| `NEXT_PUBLIC_DEMO_ACCESS_CODE` | `.env.local` + **Cloudflare Pages** | Recommended for shared demos | Temporary site-wide demo access code for `/`, `/leaderboard`, `/display`, `/admin`, `/admin/questions`, `/admin/analytics`, `/quiz`, and `/results`. Unlocked state is cached per tab in `sessionStorage`. Because this is a public static-export env var, it is demo privacy only, not production-grade security. |
 | `CONVEX_DEPLOYMENT` | `.env.local` (Next.js) | For CLI / codegen | Set automatically when Convex CLI configures the project (see `.env.local` after `convex dev`). |
 | `ADMIN_ACCESS_CODE` | **Convex deployment env vars** (set with `npx convex env set`) | **Yes** if you want to use the admin pages | Shared secret for the MVP admin gate. Read by `process.env.ADMIN_ACCESS_CODE` inside Convex functions. **Do not** prefix with `NEXT_PUBLIC_` - the value must stay server-side. See "Admin gate (MVP)" below. |
 
 **Convex Auth** (future milestone) will replace the shared-code gate with proper per-user auth.
+
+## Demo access gate
+
+The public demo link has a temporary site-wide access screen branded **EventPulse Demo**. Visitors enter the `NEXT_PUBLIC_DEMO_ACCESS_CODE` once per browser tab; a successful unlock stores `qna:demo-access-unlocked` in `sessionStorage`. The header includes a small **Lock demo** action that clears this state.
+
+This is separate from admin access:
+
+- **Demo access code** (`NEXT_PUBLIC_DEMO_ACCESS_CODE`) opens the demo site in a browser tab.
+- **Admin access code** (`ADMIN_ACCESS_CODE`) opens admin tools and is still verified server-side by Convex.
+
+Because the app is a static export, `NEXT_PUBLIC_DEMO_ACCESS_CODE` is inlined into the frontend bundle. Treat it as light privacy for internal testing, not real authentication. If the variable is missing, local development stays open; production builds show a friendly configuration message on protected routes.
 
 ## Admin gate (MVP)
 
@@ -175,6 +187,7 @@ You can use either the Cloudflare dashboard (recommended) or `wrangler` CLI.
    | Variable | Value |
    |----------|-------|
    | `NEXT_PUBLIC_CONVEX_URL` | The production HTTP URL printed by `npx convex deploy`. |
+   | `NEXT_PUBLIC_DEMO_ACCESS_CODE` | `your-demo-code` for the temporary demo access screen. |
    | `NODE_VERSION` | `20` |
 
 5. Click **Save and Deploy**.
@@ -199,6 +212,7 @@ Then set the env var in the dashboard (Pages → your project → Settings → E
 | Where | Variable | Value |
 |-------|----------|-------|
 | **Cloudflare Pages** (Production + Preview) | `NEXT_PUBLIC_CONVEX_URL` | Production Convex URL from `npx convex deploy`. |
+| **Cloudflare Pages** (Production + Preview) | `NEXT_PUBLIC_DEMO_ACCESS_CODE` | Temporary demo access code, for example `your-demo-code`. Public/inlined; demo privacy only. |
 | **Cloudflare Pages** | `NODE_VERSION` | `20` |
 | **Convex prod deployment** | `ADMIN_ACCESS_CODE` | The shared admin secret. Set with `npx convex env set ADMIN_ACCESS_CODE <code> --prod`. **Server-side only.** |
 
@@ -241,6 +255,7 @@ npm run preview     # serves out/ on http://localhost:4173 via npx serve
 
 ## Demo safety
 
+- The demo access gate is **privacy only**. `NEXT_PUBLIC_DEMO_ACCESS_CODE` is bundled into the static frontend and can be discovered by someone inspecting the site assets. Use it to keep an internal demo link out of casual view, not as production security.
 - The admin gate is **MVP-only** (one shared `ADMIN_ACCESS_CODE`). Do **not** use this app in its current form for a real, public, multi-admin production deployment - replace with Convex Auth + role checks first.
 - **Do not commit the admin code** to git, screenshots, support channels, or the Cloudflare repo metadata.
 - **Do not paste the admin code into screen recordings or shared client demos** - anyone who sees it has full admin access until you rotate.
@@ -251,8 +266,8 @@ npm run preview     # serves out/ on http://localhost:4173 via npx serve
 | Path | Purpose |
 |------|---------|
 | `app/` | Next.js App Router routes (incl. `/admin` unlock, `/admin/questions`, `/admin/analytics`, projection-friendly `/display`) |
-| `components/` | Shared UI (layout chrome, Convex provider, leaderboard panel, route error card, admin gate, placeholders) |
-| `lib/` | Client-side utilities (e.g. `useAdminUnlock` sessionStorage hook) |
+| `components/` | Shared UI (layout chrome, demo access gate, Convex provider, leaderboard panel, route error card, admin gate, placeholders) |
+| `lib/` | Client-side utilities (e.g. `useDemoAccess` and `useAdminUnlock` sessionStorage hooks) |
 | `convex/` | Schema + Convex functions (`events`, `questions`, `quizSessions`, `answers`, `analytics`, `seed`, `adminAuth`) |
 | `convex/_generated/` | Auto-generated by `npx convex dev` - typed `api`, `Id<TableName>`, etc. Do not edit by hand. |
 
@@ -269,6 +284,7 @@ npm run preview     # serves out/ on http://localhost:4173 via npx serve
 | Visitor flow | **Working & polished** - landing (instructions + validation) → quiz (large tap targets, percent progress, "Saving…" / "Completing quiz…" states) → results (rating-tinted card, formatted time, rank within event). |
 | Direct route errors | `/quiz` and `/results` opened without their URL params show a polished `RouteError` card with a **Start from home** CTA. |
 | Visitor auth | **Deferred** - display name + client `visitorIdentifier` (`${eventId}:${slug(name)}`). Same name + same event = shared attempt. |
+| Demo access | Temporary public-link privacy gate via `NEXT_PUBLIC_DEMO_ACCESS_CODE`; unlocks per browser tab via `sessionStorage`. Public/inlined in the static bundle, so not production-grade security. |
 | Admin auth | **MVP shared-code gate** - `ADMIN_ACCESS_CODE` env var on Convex, unlocked once at `/admin` per browser tab. Replace with Convex Auth + role check before deployment. |
 
 See **`project.md`** and **`technical.md`** for the full product spec and technical contract.
@@ -338,6 +354,7 @@ If the demo event hasn't been seeded yet, the call is a graceful no-op (it retur
 ## Remaining limitations (demo build)
 
 - **Admin gate is MVP shared-secret only** - `ADMIN_ACCESS_CODE` is one value shared by every admin. No per-user accounts, no role separation, no rate limiting, no audit. Replace with Convex Auth + role check before deployment.
+- **Demo access is not auth** - `NEXT_PUBLIC_DEMO_ACCESS_CODE` is client-visible by design because the app is a static export. It only discourages casual access to shared demo links.
 - **Visitor identity is advisory** - `visitorIdentifier = ${eventId}:${slug(displayName)}`. Same name + same event collide. OK for demos, **not** public competitions.
 - **No anti-cheat / rate limiting** on `submitAnswer` or `createQuizSession`.
 - **Multi-event routing not wired yet** - `/`, `/leaderboard`, and `/display` always resolve the slug `demo-event`. Per-event URLs (`/event/[slug]/…`) are a future milestone.

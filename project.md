@@ -74,6 +74,7 @@ These assumptions unblock development while client questions are open. They may 
 - [x] Per-event analytics dashboard at `/admin/analytics` (totals + per-question correctness bars).
 - [x] **Reset responses** danger-zone action on `/admin/analytics` and `/admin/questions` - deletes every visitor session + answer for the selected event while preserving the event and its questions. Wraps the `seed.resetDemoEventResponses` mutation with a browser `confirm`. Visible UI no longer mentions internal function names or implementation details.
 - [x] **MVP admin gate** at `/admin` - single shared `ADMIN_ACCESS_CODE` (Convex env var) checked server-side. Unlocked code is cached in `sessionStorage` and forwarded to every protected mutation + analytics query. UI routes (`/admin/questions`, `/admin/analytics`) are wrapped in `AdminGate`; locked visitors see an "Admin access required" card with a CTA to `/admin`.
+- [x] **Temporary demo access gate** - protected demo routes (`/`, `/leaderboard`, `/display`, `/admin`, `/admin/questions`, `/admin/analytics`, `/quiz`, `/results`) show an **EventPulse Demo** access screen before rendering app content. `NEXT_PUBLIC_DEMO_ACCESS_CODE` unlocks the current browser tab via `sessionStorage`; the header exposes a small **Lock demo** action. This is only privacy for internal testing because the app is a static export and the code is bundled client-side.
 - [ ] Admin CRUD for **events** (Convex mutations exist; UI not built yet - only the seed flow creates events from the UI).
 - [x] Admin CRUD for **questions** (per event) - list (active only), create, **edit in place** (`adminUpdateQuestion`), hard-delete. *Reorder UI is still TODO.*
 - [x] Seed sample event + questions (`seedDemoEvent` mutation + admin **Create demo event** button in the UI; demo event slug `demo-event`).
@@ -107,6 +108,8 @@ These assumptions unblock development while client questions are open. They may 
 | `/admin/questions` | Question management (gated) - event picker, list (active only), create form, **inline edit per row** (Save / Cancel), hard delete, **Create demo event** button (UI label; backed by `seed.seedDemoEvent`), **Reset responses** danger-zone. Only one row can be in edit mode at a time; other rows' Edit/Delete buttons are disabled while editing. |
 | `/admin/analytics` | Per-event analytics (gated) - totals (completed, in-progress, average score / percentage, highest score, fastest top-scorer time, active questions) + per-question correctness bars + **Reset responses** danger-zone. |
 
+All routes listed above are currently behind the temporary demo access gate for shared-link testing. The admin pages still require the separate Convex-backed admin code after demo access is unlocked.
+
 ## Deployment Targets
 
 | Layer | Platform | Build path |
@@ -133,6 +136,7 @@ Run through this **in order** for a fresh production launch (or any time you cha
 - [ ] Build command: `npm run build`. Output directory: `out`. Root: `/`.
 - [ ] Environment variables (Production **and** Preview):
   - [ ] `NEXT_PUBLIC_CONVEX_URL` = production Convex HTTPS URL from step 1.
+  - [ ] `NEXT_PUBLIC_DEMO_ACCESS_CODE=your-demo-code` = temporary demo access code for shared-link privacy.
   - [ ] `NODE_VERSION` = `20`.
 - [ ] Trigger a deploy. Confirm Cloudflare's build log ends with the same "Generating static pages" output as `npm run build` locally.
 
@@ -154,6 +158,7 @@ Run through this **in order** for a fresh production launch (or any time you cha
 | Where | Variable | Purpose |
 |-------|----------|---------|
 | Cloudflare Pages (Production + Preview) | `NEXT_PUBLIC_CONVEX_URL` | Production Convex HTTPS URL. Inlined at build time. |
+| Cloudflare Pages (Production + Preview) | `NEXT_PUBLIC_DEMO_ACCESS_CODE` | Temporary demo access code. Inlined into the static frontend, so privacy only. |
 | Cloudflare Pages | `NODE_VERSION` | `20`, so Next.js 16 builds successfully. |
 | Convex prod deployment | `ADMIN_ACCESS_CODE` | Shared admin secret. **Server-side only - never expose to the client.** |
 
@@ -204,6 +209,7 @@ Two visitors who type the **same name** on the **same event** collide and share 
 
 - **No anti-cheat / rate limiting** on `submitAnswer` or `createQuizSession`. The same machine can spam visitor names to get multiple attempts.
 - **MVP admin gate, not real auth**: `/admin/questions`, `/admin/analytics`, and every protected Convex mutation/query are gated by a single shared `ADMIN_ACCESS_CODE`. The code lives in Convex env vars (server-side); the UI caches it in `sessionStorage` after a one-time unlock at `/admin`. There are no per-user accounts, role separation, or audit trail. Replace with Convex Auth + role checks before public deployment.
+- **Demo access gate is privacy only**: `NEXT_PUBLIC_DEMO_ACCESS_CODE` opens the public demo routes before the admin gate is reached. It is a public static-export variable and can be found in the browser bundle, so it must not be treated as production security.
 - `getLeaderboard.eventId` remains optional for back-compat; will be required once an event picker reaches the leaderboard page.
 - `listActiveQuestions` is the only question listing query - admin can't see inactive questions yet.
 - Analytics aggregates are computed in-memory per request (small-event safe). Larger events should switch to denormalised counters or scheduled aggregations.
